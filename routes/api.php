@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AuthController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,10 +20,18 @@ use App\Http\Controllers\ProductController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-// another way of setting the middleware for individual routes
-Route::get('/products/search/{name}', [ProductController::class, 'search'])
-    ->middleware('auth:sanctum');
-
+/**
+ * Airline
+ * 
+ * all endpoints requires authentication
+ */
+ Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/airlines', [AirlineController::class, 'index']);
+    Route::post('/airlines', [AirlineController::class, 'store']);
+    Route::get('/airlines/{id}', [AirlineController::class, 'show']);
+    Route::delete('/airlines/{id}', [AirlineController::class, 'destroy']);
+    Route::put('/airlines/{id}', [AirlineController::class, 'update']);
+});
 
 
 
