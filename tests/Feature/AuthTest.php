@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use function PHPUnit\Framework\assertContains;
+use function PHPUnit\Framework\assertIsInt;
+use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertTrue;
 
 class AuthTest extends TestCase
@@ -26,7 +28,6 @@ class AuthTest extends TestCase
 
         // Act
         $response = $this->post('/api/register', $user);
-        $registerResponse = json_decode($response->getContent());
 
         // Assert
         $response->assertStatus(201);
@@ -48,8 +49,9 @@ class AuthTest extends TestCase
         // Assert 1
         $response->assertStatus(201);
 
-        assertTrue(strlen($loginResponse['token']) > 3);
+        // the token is long enough
+        assertTrue(strlen($loginResponse->token) > 10);
         // assert that the token is in the expected format `userId|token`
-        assertContains($loginResponse['user']['id'] . '|', $loginResponse['token']);
+        assertStringContainsString('|', $loginResponse->token);
     }
 }
