@@ -18,7 +18,9 @@ class CreateFlightsTable extends Migration
             $table->foreignId('airline_id')->constrained();
             $table->foreignId('departure_airport_id')->constrained('airports', 'id');
             $table->foreignId('arrival_airport_id')->constrained('airports', 'id');
-            $table->string('number');
+            $table->integer('number');
+            $table->time('departure_time');
+            $table->time('arrival_time');
             $table->decimal('price', 6, 2);
             $table->timestamps();
         });

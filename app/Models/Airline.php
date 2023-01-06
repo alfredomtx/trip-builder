@@ -9,7 +9,7 @@ class Airline extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'iata_code'];
+    protected $fillable = ['name', 'code'];
 
     public function flights(){
         return $this->hasMany(Flight::class, 'airline_id');

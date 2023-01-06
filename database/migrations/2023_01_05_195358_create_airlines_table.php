@@ -16,7 +16,7 @@ class CreateAirlinesTable extends Migration
         Schema::create('airlines', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('iata_code');
+            $table->string('code');
             $table->timestamps();
         });
     }

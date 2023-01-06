@@ -16,7 +16,7 @@ class AirlineFactory extends Factory
         $name = $this->faker->name();
         return [
             'name' => $name,
-            'iata_code' => create_acronym_from_words($name),
+            'code' => create_acronym_from_words($name),
         ];
     }
 }

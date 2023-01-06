@@ -16,7 +16,9 @@ class CityFactory extends Factory
         $name = $this->faker->city();
         return [
             'name' => $name,
-            'iata_code' => create_acronym_from_words($name),
+            'code' => create_acronym_from_words($name),
+            'region_code' => create_acronym_from_words($this->faker->state()),
+            'country_code' => $this->faker->countryCode(),
             'timezone' => $this->faker->timezone(),
         ];
     }

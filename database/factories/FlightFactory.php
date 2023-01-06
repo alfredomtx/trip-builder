@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Airline;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FlightFactory extends Factory
@@ -13,13 +14,14 @@ class FlightFactory extends Factory
      */
     public function definition()
     {
-        $acronym = create_acronym_from_words($this->faker->name());
-        $number =  $acronym . $this->faker->numberBetween(100, 999);
+        $number =  $this->faker->numberBetween(000, 9999);
         $price = $this->faker->numberBetween(50, 10000) . '.00';
 
         return [
             'number' => $number,
             'price' => $price,
+            'departure_time' => date('H:i', strtotime($this->faker->time())),
+            'arrival_time' => date('H:i', strtotime($this->faker->time())),
         ];
     }
 }

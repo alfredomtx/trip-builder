@@ -16,7 +16,7 @@ class AirportFactory extends Factory
         $name = $this->faker->name();
         return [
             'name' => $name . " Airport",
-            'iata_code' => create_acronym_from_words($name),
+            'code' => create_acronym_from_words($name),
             'latitude' => $this->faker->latitude(),
             'longitude' => $this->faker->longitude(),
         ];

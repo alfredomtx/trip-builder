@@ -9,7 +9,7 @@ class City extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'iata_code', 'timezone'];
+    protected $fillable = ['name', 'code', 'region_code', 'country_code', 'timezone'];
 
     public function airport(){
         return $this->hasMany(Airport::class, 'city_id');

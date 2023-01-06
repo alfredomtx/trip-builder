@@ -102,7 +102,7 @@ class AirlineTest extends TestCase
             $airline = $airlines[$i];
             $airlineResponse = $filteredAirlines[$i];
             $this->assertEquals($airline['name'], $airlineResponse['name']);
-            $this->assertEquals($airline['iata_code'], $airlineResponse['iata_code']);
+            $this->assertEquals($airline['code'], $airlineResponse['code']);
         }
     }
 

@@ -17,7 +17,7 @@ class CreateAirportsTable extends Migration
             $table->id();
             $table->foreignId('city_id')->constrained();
             $table->string('name');
-            $table->string('iata_code');
+            $table->string('code');
             $table->bigInteger('latitude');
             $table->bigInteger('longitude');
             $table->timestamps();
