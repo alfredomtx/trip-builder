@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Airline;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Airline;
 use TheSeer\Tokenizer\Exception;
 
-use function PHPUnit\Framework\assertTrue;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AirlineTest extends TestCase
 {
@@ -72,41 +72,38 @@ class AirlineTest extends TestCase
     */
     public function test_get_returns_airlines(){
         // Arrange
+        $user = User::factory()->create();
         // create 2 Airlines
         $airlines = Airline::factory(2)->create();
 
         // Act
-        $response = $this->getJson('/airlines');
+        $response = $this->actingAs($user)->getJson('/api/airlines');
 
         // Assert
         $response->assertStatus(200);
         // assert we have the same `name` and `iata/code`
-        $airlinesResponse = json_decode($response->getContent());
-        dd($airlinesResponse);
+        $airlinesResponse = json_decode($response->getContent(), true);
 
         // filter from the response only the 2 airlines we added before
-        $filteredAirlines = array_filter($airlinesResponse, function ($airline) use ($airlines) {
-            if ($airline['name'] == $airlines[0]->name)
-                return true;
+        $filteredAirlines = array_filter($airlinesResponse['data'], function ($airlinesResponse) use ($airlines) {
+            foreach ($airlines as $airline){
+                if ($airlinesResponse['name'] == $airline->name){
+                    return true;
+                }
+            }
             return false;
         });
 
-        assertTrue(count($filteredAirlines) == 2);
+        // assert 2 airlines have been added
+        $this->assertTrue(count($filteredAirlines) == 2);
+
         // assert both `name` and `iata codes` are the same
-        assertTrue($filteredAirlines[0]['name'] == $airlines[0]['name']);
-        assertTrue($filteredAirlines[0]['iata_code'] == $airlines[0]['iata_code']);
-        assertTrue($filteredAirlines[1]['name'] == $airlines[1]['name']);
-        assertTrue($filteredAirlines[1]['iata_code'] == $airlines[1]['iata_code']);
-
-
-        // Clean
-        $this->deleteAirlines($airlines);
-
-    }
-
-    public function deleteAirlines(Airline $airlines){
-        foreach ($airlines as $airline){
-            Airline::destroy($airline);
+        for ($i=0; $i < count($airlines) - 1; $i++) { 
+            $airline = $airlines[$i];
+            $airlineResponse = $filteredAirlines[$i];
+            $this->assertEquals($airline['name'], $airlineResponse['name']);
+            $this->assertEquals($airline['iata_code'], $airlineResponse['iata_code']);
         }
     }
+
 }

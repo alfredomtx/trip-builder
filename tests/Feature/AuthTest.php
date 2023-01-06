@@ -7,11 +7,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-use function PHPUnit\Framework\assertContains;
-use function PHPUnit\Framework\assertIsInt;
-use function PHPUnit\Framework\assertStringContainsString;
-use function PHPUnit\Framework\assertTrue;
-
 class AuthTest extends TestCase
 {
     use WithFaker;
@@ -50,8 +45,8 @@ class AuthTest extends TestCase
         $response->assertStatus(201);
 
         // the token is long enough
-        assertTrue(strlen($loginResponse->token) > 10);
+        $this->assertTrue(strlen($loginResponse->token) > 10);
         // assert that the token is in the expected format `userId|token`
-        assertStringContainsString('|', $loginResponse->token);
+        $this->assertStringContainsString('|', $loginResponse->token);
     }
 }

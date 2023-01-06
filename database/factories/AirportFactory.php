@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AirlineFactory extends Factory
+class AirportFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,8 +15,10 @@ class AirlineFactory extends Factory
     {
         $name = $this->faker->name();
         return [
-            'name' => $name,
+            'name' => $name . " Airport",
             'iata_code' => create_acronym_from_words($name),
+            'latitude' => $this->faker->latitude(),
+            'longitude' => $this->faker->longitude(),
         ];
     }
 }
