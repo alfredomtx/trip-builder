@@ -18,6 +18,18 @@ class CitySeeder extends Seeder
     public function run()
     {
         $this->truncate('cities');
+
+        City::factory()->create([
+            'name' => 'Montreal',
+            'code' => 'YMQ',
+            'timezone' => 'America/Montreal',
+        ]);
+        City::factory()->create([
+            'name' => 'Vancouver',
+            'code' => 'YVR',
+            'timezone' => 'America/Vancouver',
+        ]);
+
         City::factory(5)->create();
     }
 }

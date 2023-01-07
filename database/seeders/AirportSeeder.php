@@ -19,6 +19,18 @@ class AirportSeeder extends Seeder
     public function run()
     {
         $this->truncate('airports');
+
+        Airport::factory()->create([
+            'name' => 'Pierre Elliott Trudeau International',
+            'code' => 'YUL',
+            'city_id' => 1,
+        ]);
+        Airport::factory()->create([
+            'name' => 'Vancouver International',
+            'code' => 'YVR',
+            'city_id' => 2,
+        ]);
+
         Airport::factory(5)->create();
     }
 }

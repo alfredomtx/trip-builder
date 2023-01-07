@@ -31,55 +31,43 @@ class FlightSeeder extends Seeder
     /**
      * Create or return a flight leaving from Montreal at `1 PM` and arriving at Vancouver at `3 PM`.
      * Local times converted to UTC on insert.
-     * @return Collection
+     * @return Flight
      */
-    public static function montrealToVancouver1Pm(): Collection
+    public static function montrealToVancouver1Pm()
     {
-        $montreal = City::where('code', 'YMQ')->get()->first();
-        if (!$montreal){
-            $montreal = City::factory()->create([
-                'name' => 'Montreal',
-                'code' => 'YMQ',
-                'timezone' => 'America/Montreal',
-            ]);
-        }
+        $montreal = City::factory()->make([
+            'name' => 'Montreal',
+            'code' => 'YMQ',
+            'timezone' => 'America/Montreal',
+        ]);
+        $montreal = City::firstOrCreate($montreal->toArray());
 
-        $montrealAirport = Airport::where('code', 'YUL')->get()->first();
-        if (!$montrealAirport){
-            $montrealAirport = Airport::factory()
-                ->create([
-                    'name' => 'Pierre Elliott Trudeau International',
-                    'code' => 'YUL',
-                    'city_id' => $montreal->id,
-                ]);
-        }
+        $montrealAirport = Airport::factory()->make([
+            'name' => 'Pierre Elliott Trudeau International',
+            'code' => 'YUL',
+            'city_id' => $montreal->id,
+        ]);
+        $montrealAirport = Airport::firstOrCreate($montrealAirport->toArray());
 
-        $vancouver = City::where('code', 'YVR')->get()->first();
-        if (!$vancouver){
-            $vancouver = City::factory()->create([
-                'name' => 'Vancouver',
-                'code' => 'YVR',
-                'timezone' => 'America/Vancouver',
-            ]);
-        }
+        $vancouver = City::factory()->make([
+            'name' => 'Vancouver',
+            'code' => 'YVR',
+            'timezone' => 'America/Vancouver',
+        ]);
+        $vancouver = City::firstOrCreate($vancouver->toArray());
 
-        $vancouverAirport = Airport::where('code', 'YVR')->get()->first();
-        if (!$vancouverAirport){
-            $vancouverAirport = Airport::factory()
-                ->create([
-                    'name' => 'Vancouver International',
-                    'code' => 'YVR',
-                    'city_id' => $vancouver->id,
-                ]);
-        }
+        $vancouverAirport = Airport::factory()->make([
+            'name' => 'Vancouver International',
+            'code' => 'YVR',
+            'city_id' => $vancouver->id,
+        ]);
+        $vancouverAirport = Airport::firstOrCreate($vancouverAirport->toArray());
 
-        $airline = Airline::where('code', 'AC')->get()->first();
-        if (!$airline){
-            $airline = Airline::factory()->create([
-                'name' => "Air Canada",
-                'code' => 'AC',
-            ]);
-        }
+        $airline = Airline::factory()->make([
+            'name' => "Air Canada",
+            'code' => 'AC',
+        ]);
+        $airline = Airline::firstOrCreate($airline->toArray());
 
         $montrealTime = date("H:i", strtotime("01:00 PM"));
         $vancouverTime = date("H:i", strtotime("03:00 PM"));
