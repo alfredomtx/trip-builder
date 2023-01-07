@@ -12,7 +12,7 @@ use Database\Seeders\FlightSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TripTest extends TestCase
+class FlightTest extends TestCase
 {
 
     use WithFaker;
@@ -21,9 +21,8 @@ class TripTest extends TestCase
         'arrival_airport',
     ];
 
-
-    public function test_request_missing_required_fields_returns_422(){
-
+    public function test_request_missing_required_fields_returns_422()
+    {
         foreach (Self::$requiredFields as $removedField){
             // Arrange
             $fields = array_values(Self::$requiredFields);
@@ -39,9 +38,10 @@ class TripTest extends TestCase
     }
 
     /**
-     * 
+     *
      */
-    public function test_departure_and_arrival_filters_work_for_one_round_trip(){
+    public function test_departure_and_arrival_filters_work_for_one_round_trip()
+    {
         // Arrange
         // create some random flights to ensure diversification
         Flight::factory(5)->create();

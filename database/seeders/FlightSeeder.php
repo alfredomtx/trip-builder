@@ -8,9 +8,7 @@ use App\Models\City;
 use App\Models\Flight;
 use Database\Seeders\Traits\TruncateTable;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class FlightSeeder extends Seeder
 {
@@ -35,7 +33,7 @@ class FlightSeeder extends Seeder
      * Local times converted to UTC on insert.
      * @return Collection
      */
-    public static function montrealToVancouver1Pm()
+    public static function montrealToVancouver1Pm(): Collection
     {
         $montreal = City::where('code', 'YMQ')->get()->first();
         if (!$montreal){

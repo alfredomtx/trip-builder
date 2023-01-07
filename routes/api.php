@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TripController;
+use App\Http\Controllers\FlightController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,24 +18,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-/**
- * Airline
- * 
- * all endpoints requires authentication
- */
- Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/airlines', [AirlineController::class, 'index']);
-    Route::post('/airlines', [AirlineController::class, 'store']);
-    Route::get('/airlines/{id}', [AirlineController::class, 'show']);
-    Route::delete('/airlines/{id}', [AirlineController::class, 'destroy']);
-    Route::put('/airlines/{id}', [AirlineController::class, 'update']);
-});
+Route::get('/flights/search', [FlightController::class, 'searchFlights']);
 
-Route::post('/trips/search', [TripController::class, 'searchFlights']);
 
+Route::prefix('airlines')
+    ->name('airlines.') // identifier to prefix in child `->name()` identifiers
+//    ->middleware('auth:sanctum')
+    ->group(function(){
+        Route::get('', [AirlineController::class, 'index'])
+            ->name('index');
+        Route::get('/{id}', [AirlineController::class, 'show'])
+            ->name('show')
+            ->whereNumber('id');
+        Route::post('', [AirlineController::class, 'store'])
+            ->name('store');
+        Route::put('/{id}', [AirlineController::class, 'update'])
+            ->name('update');
+        Route::delete('/{id}', [AirlineController::class, 'destroy'])
+            ->name('destroy')
+            ->whereNumber('id');
+    });
 
 
 

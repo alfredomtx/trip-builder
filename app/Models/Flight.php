@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -18,15 +18,34 @@ class Flight extends Model
         'arrival_time',
         'airline_id',
         'departure_airport_id',
-        'arrival_airport_id'
+        'arrival_airport_id',
     ];
+
+    public function airline(): BelongsTo
+    {
+        return $this->belongsTo(Airline::class, 'airline_id');
+    }
+
+    public function departureAirport(): BelongsTo
+    {
+        return $this->belongsTo(Airport::class, 'departure_airport_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function arrivalAirport(): BelongsTo
+    {
+        return $this->belongsTo(Airport::class, 'arrival_airport_id');
+    }
+
 
     /**
      * Summary of searchFlights
      * @param array $filters
      * @return Collection
      */
-    
+
     public static function searchFlights(array $filters): Collection {
 
         $query = Flight::select(
@@ -45,14 +64,10 @@ class Flight extends Model
             $join->on('arrival_airport_id', 'arrival_airport.id')
                 ->where('arrival_airport.code', $filters['arrival_airport']);
         });
-    
 
-            
-        if ($filters['paginate'] ?? false){
-            $query->paginate(10);
-        }
 
-        die($query->toSql());
+
+//        die($query->toSql());
 
         return $query->get();
 
@@ -75,21 +90,8 @@ class Flight extends Model
             $query->where('departure_time', '>=', $filters['departure_time']);
         }
 
-        // if ($filters['paginate'] ?? false){
-        //     $query->paginate(10);
-        // }
         // die($query->toSql());
     }
 
-    public function airline(){
-        return $this->belongsTo(Airline::class, 'airline_id');
-    }
-    public function departureAirport(){
-        return $this->belongsTo(Airport::class, 'departure_airport_id');
-    }
-    public function arrivalAirport(){
-        return $this->belongsTo(Airport::class, 'arrival_airport_id');
-    }
-    
 
 }
