@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use Exception;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Airline;
-use TheSeer\Tokenizer\Exception;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -67,7 +67,7 @@ class AirlineTest extends TestCase
         }
     }
 
-    /** 
+    /**
      * Test if GET returns all airlines
     */
     public function test_get_returns_airlines(){
@@ -98,7 +98,7 @@ class AirlineTest extends TestCase
         $this->assertTrue(count($filteredAirlines) == 2);
 
         // assert both `name` and `codes` are the same
-        for ($i=0; $i < count($airlines) - 1; $i++) { 
+        for ($i=0; $i < count($airlines) - 1; $i++) {
             $airline = $airlines[$i];
             $airlineResponse = $filteredAirlines[$i];
             $this->assertEquals($airline->name, $airlineResponse['name']);

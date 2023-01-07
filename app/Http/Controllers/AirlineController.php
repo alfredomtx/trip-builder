@@ -6,17 +6,18 @@ use App\Http\Requests\AirlineRequest;
 use App\Http\Resources\AirlineResource;
 use App\Models\Airline;
 use App\Repositories\AirlineRepository;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use PHP_CodeSniffer\Reports\Json;
 
 class AirlineController extends Controller
 {
     /**
-     * Display a listing of the Airlines.
+     * Display a listing of the resource.
      *
+     * @param Request $request
      * @return ResourceCollection
      */
     public function index(Request $request)
@@ -32,10 +33,11 @@ class AirlineController extends Controller
     }
 
     /**
-     * Store a newly created Airline in storage.
+     * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @param AirlineRepository $repository
+     * @return AirlineResource
      */
     public function store(Request $request, AirlineRepository $repository)
     {
@@ -53,7 +55,7 @@ class AirlineController extends Controller
     }
 
     /**
-     * Display the specified Airline.
+     * Display the specified resource.
      *
      * @param  int  $id
      * @return AirlineResource
@@ -64,7 +66,7 @@ class AirlineController extends Controller
     }
 
     /**
-     * Update the specified Airline in storage.
+     * Update the specified resource in storage.
      *
      * @param Request $request
      * @param AirlineRepository $repository
@@ -80,7 +82,7 @@ class AirlineController extends Controller
 
         $airline = Airline::find($id);
         if (!$airline){
-            abort(204);
+            abort(404);
         }
 
         $updated = $repository->update($airline, $request->only([
@@ -92,10 +94,11 @@ class AirlineController extends Controller
     }
 
     /**
-     * Remove the specified Airline from storage.
+     * Delete the specified resource from storage.
      *
-     * @param  int  $id
-     * @return JsonResponse
+     * @param AirlineRepository $repository
+     * @param int $id
+     * @return Response
      */
     public function destroy(AirlineRepository $repository, int $id)
     {
@@ -105,6 +108,6 @@ class AirlineController extends Controller
         }
         $repository->delete($airline);
 
-        return new JsonResponse(true, 204);
+        return response(true, 204);
     }
 }
