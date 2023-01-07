@@ -7,10 +7,12 @@ use App\Models\Airport;
 use App\Models\City;
 use App\Models\Flight;
 use App\Models\User;
+use Database\Seeders\Traits\TruncateTable;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    use TruncateTable;
 	/**
 	 * Seed the application's database.
 	 *
@@ -18,14 +20,12 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-		User::factory(5)->create();
-
 		$this->call([
+            UserSeeder::class,
 			CitySeeder::class,
 			AirportSeeder::class,
 			AirlineSeeder::class,
 			FlightSeeder::class,
 		]);
-
 	}
 }

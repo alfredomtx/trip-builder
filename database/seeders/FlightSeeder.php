@@ -6,10 +6,15 @@ use App\Models\Airline;
 use App\Models\Airport;
 use App\Models\City;
 use App\Models\Flight;
+use Database\Seeders\Traits\TruncateTable;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FlightSeeder extends Seeder
 {
+    use TruncateTable;
     /**
      * Run the database seeds.
      *
@@ -17,6 +22,7 @@ class FlightSeeder extends Seeder
      */
     public function run()
     {
+        $this->truncate('flights');
 
         self::montrealToVancouver1Pm();
 
@@ -27,9 +33,10 @@ class FlightSeeder extends Seeder
     /**
      * Create or return a flight leaving from Montreal at `1 PM` and arriving at Vancouver at `3 PM`.
      * Local times converted to UTC on insert.
-     * @return Flight
+     * @return Collection
      */
-    public static function montrealToVancouver1Pm(): Flight {
+    public static function montrealToVancouver1Pm()
+    {
         $montreal = City::where('code', 'YMQ')->get()->first();
         if (!$montreal){
             $montreal = City::factory()->create([
@@ -38,7 +45,7 @@ class FlightSeeder extends Seeder
                 'timezone' => 'America/Montreal',
             ]);
         }
-        
+
         $montrealAirport = Airport::where('code', 'YUL')->get()->first();
         if (!$montrealAirport){
             $montrealAirport = Airport::factory()

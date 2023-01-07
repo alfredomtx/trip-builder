@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Airport;
-use App\Models\City;
+use App\Models\User;
 use Database\Seeders\Traits\TruncateTable;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class AirportSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     use TruncateTable;
     /**
@@ -18,7 +17,7 @@ class AirportSeeder extends Seeder
      */
     public function run()
     {
-        $this->truncate('airports');
-        Airport::factory(5)->create();
+        $this->truncate('users');
+        User::factory(5)->create();
     }
 }
