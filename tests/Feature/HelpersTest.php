@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use DateTime;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use function PHPUnit\Framework\assertEquals;
 
 class HelpersTest extends TestCase
 {
@@ -35,4 +38,20 @@ class HelpersTest extends TestCase
         // Assert 3
         $this->assertEquals("NAL", $acronym);
     }
+
+    public function test_convert_time_to_utc_from_timezone(){
+        // Arrange
+        $montrealTime = date("H:i", strtotime("01:00 PM"));
+        $vancouverTime = date("H:i", strtotime("03:00 PM"));
+
+        // Act
+        $montrealTimeUtc = convert_time_to_utc_from_timezone($montrealTime, 'America/Montreal');
+        $vancouverTimeUtc = convert_time_to_utc_from_timezone($vancouverTime, 'America/Vancouver');
+        
+        // Assert
+        assertEquals($montrealTimeUtc, '18:00');
+        assertEquals($vancouverTimeUtc, '23:00');
+    }
+
 }
+

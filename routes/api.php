@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TripController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,9 @@ Route::post('/register', [AuthController::class, 'register']);
     Route::delete('/airlines/{id}', [AirlineController::class, 'destroy']);
     Route::put('/airlines/{id}', [AirlineController::class, 'update']);
 });
+
+Route::post('/trips/search', [TripController::class, 'searchFlights']);
+
 
 
 

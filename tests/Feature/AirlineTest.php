@@ -81,13 +81,13 @@ class AirlineTest extends TestCase
 
         // Assert
         $response->assertStatus(200);
-        // assert we have the same `name` and `iata/code`
+        // assert we have the same `name` and `code`
         $airlinesResponse = json_decode($response->getContent(), true);
 
         // filter from the response only the 2 airlines we added before
-        $filteredAirlines = array_filter($airlinesResponse['data'], function ($airlinesResponse) use ($airlines) {
-            foreach ($airlines as $airline){
-                if ($airlinesResponse['name'] == $airline->name){
+        $filteredAirlines = array_filter($airlinesResponse['data'], function ($airlineResponse) use ($airlines) {
+            foreach($airlines as $airline){
+                if ($airlineResponse['name'] == $airline->name){
                     return true;
                 }
             }
@@ -97,12 +97,12 @@ class AirlineTest extends TestCase
         // assert 2 airlines have been added
         $this->assertTrue(count($filteredAirlines) == 2);
 
-        // assert both `name` and `iata codes` are the same
+        // assert both `name` and `codes` are the same
         for ($i=0; $i < count($airlines) - 1; $i++) { 
             $airline = $airlines[$i];
             $airlineResponse = $filteredAirlines[$i];
-            $this->assertEquals($airline['name'], $airlineResponse['name']);
-            $this->assertEquals($airline['code'], $airlineResponse['code']);
+            $this->assertEquals($airline->name, $airlineResponse['name']);
+            $this->assertEquals($airline->code, $airlineResponse['code']);
         }
     }
 

@@ -33,3 +33,35 @@ if (! function_exists('create_acronym_from_words')) {
 
 
 
+if (! function_exists('convert_time_from_timezone_to_utc')) {
+    /**
+     * Convert an UTC time to the timezone, return `date->format('H:i')`
+     * @param string $departureTime
+     * @param string $timezone
+     * @return string
+     */
+    function convert_time_from_timezone_to_utc(string $time, string $timezone): string {
+        $date = new DateTime($time, new DateTimeZone('UTC'));
+        $date->setTimezone(new DateTimeZone($timezone));
+
+        return $date->format('H:i');
+    }
+}
+
+if (! function_exists('convert_time_to_utc_from_timezone')) {
+    /**
+     * Convert a timezone time to UTC, return `date->format('H:i')`
+     * @param string $departureTime
+     * @param string $timezone
+     * @return string
+     */
+    function convert_time_to_utc_from_timezone(string $time, string $timezone): string {
+        $date = new DateTime($time, new DateTimeZone($timezone));
+        $date->setTimezone(new DateTimeZone('UTC'));
+
+        return $date->format('H:i');
+    }
+}
+
+
+

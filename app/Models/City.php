@@ -11,7 +11,7 @@ class City extends Model
 
     protected $fillable = ['name', 'code', 'region_code', 'country_code', 'timezone'];
 
-    public function airport(){
+    public function airports(){
         return $this->hasMany(Airport::class, 'city_id');
     }
 
