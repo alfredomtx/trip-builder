@@ -27,7 +27,7 @@ Route::get('/flights/search', [FlightController::class, 'searchFlights']);
 
 Route::prefix('airlines')
     ->name('airlines.') // identifier to prefix in child `->name()` identifiers
-//    ->middleware('auth:sanctum')
+    ->middleware('auth:sanctum')
     ->group(function(){
         Route::get('', [AirlineController::class, 'index'])
             ->name('index');

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\GeneralJsonException;
 use App\Http\Requests\AirlineRequest;
 use App\Http\Resources\AirlineResource;
 use App\Models\Airline;
+use App\Models\Airport;
 use App\Repositories\AirlineRepository;
+use App\Services\AirlineService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -14,6 +17,13 @@ use PHP_CodeSniffer\Reports\Json;
 
 class AirlineController extends Controller
 {
+    protected AirlineService $service;
+
+    public function __construct(AirlineService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,22 +45,18 @@ class AirlineController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param AirlineRequest $request
      * @param AirlineRepository $repository
      * @return AirlineResource
      */
-    public function store(Request $request, AirlineRepository $repository)
+    public function store(AirlineRequest $request, AirlineRepository $repository)
     {
-        $request->validate([
-            'name' => ['required', 'min:2'],
-            'code' => ['required', 'min:2', 'unique:airlines,code'],
-        ]);
+        $request->validated();
 
-        $created = $repository->insert($request->only([
+        $created = $this->service->insert($request->only([
             'name',
             'code',
         ]));
-
         return new AirlineResource($created);
     }
 
@@ -62,52 +68,38 @@ class AirlineController extends Controller
      */
     public function show(int $id)
     {
-        return new AirlineResource(Airline::find($id));
+        $resource = $this->service->get($id);
+        return new AirlineResource($resource);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param AirlineRepository $repository
+     * @param AirlineRequest $request
      * @param int $id
      * @return AirlineResource
+     * @throws GeneralJsonException
      */
-    public function update(Request $request, AirlineRepository $repository, int $id)
+    public function update(AirlineRequest $request, int $id)
     {
-        $request->validate([
-            'name' => ['nullable', 'min:2'],
-            'code' => ['nullable', 'min:2', 'unique:airlines,code'],
-        ]);
+        $request->validated();
 
-        $airline = Airline::find($id);
-        if (!$airline){
-            abort(404);
-        }
-
-        $updated = $repository->update($airline, $request->only([
+        $resource = $this->service->update($id, $request->only([
             'name',
             'code',
         ]));
-
-        return new AirlineResource($updated);
+        return new AirlineResource($resource);
     }
 
     /**
      * Delete the specified resource from storage.
      *
-     * @param AirlineRepository $repository
      * @param int $id
      * @return Response
      */
-    public function destroy(AirlineRepository $repository, int $id)
+    public function destroy(int $id)
     {
-        $airline = Airline::find($id);
-        if (!$airline){
-            abort(204);
-        }
-        $repository->delete($airline);
-
-        return response(true, 204);
+        $this->service->delete($id);
+        return response(null, 204);
     }
 }

@@ -3,16 +3,14 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralJsonException;
-use App\Http\Resources\AirlineResource;
 use App\Models\Airline;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-class AirlineRepository implements BaseRepository
+class AirlineRepository
 {
     /**
      * @param array $attributes
-     * @return mixed
+     * @return Airline
      */
     public function insert(array $attributes)
     {
@@ -33,28 +31,26 @@ class AirlineRepository implements BaseRepository
     /**
      * @param Airline $airline
      * @param array $attributes
-     * @return mixed
-     * @noinspection PhpHierarchyChecksInspection
+     * @return Airline
      */
     public function update(Airline $airline, array $attributes)
     {
         return DB::transaction(function () use ($airline, $attributes){
             $updated = $airline->update([
-                'name' => data_get($attributes, 'name'),
-                'code' => data_get($attributes, 'code'),
+                'name' => data_get($attributes, 'name', $airline->name),
+                'code' => data_get($attributes, 'code', $airline->code),
             ]);
 
             if (!$updated){
                 throw new GeneralJsonException('Failed to update resource.');
             }
-            return $updated;
+            return $airline;
         });
     }
 
     /**
      * @param Airline $airline
-     * @return mixed
-     * @noinspection PhpHierarchyChecksInspection
+     * @return bool
      */
     public function delete(Airline $airline)
     {
@@ -64,6 +60,7 @@ class AirlineRepository implements BaseRepository
             if (!$deleted){
                 throw new GeneralJsonException('Failed to delete resource.');
             }
+            return $deleted;
         });
     }
 
