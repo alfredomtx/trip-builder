@@ -15,10 +15,6 @@ class AirportSeeder extends Seeder
      */
     public function run()
     {
-        $city = City::factory()->create();
-
-        Airport::factory(5)->create([
-            'city_id' => $city->id,
-        ]);
+        Airport::factory(5)->create();
     }
 }
