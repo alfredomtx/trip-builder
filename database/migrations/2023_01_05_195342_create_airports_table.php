@@ -15,12 +15,14 @@ class CreateAirportsTable extends Migration
     {
         Schema::create('airports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('city_id')->constrained();
             $table->string('name');
-            $table->string('code');
+            $table->string('code')->unique()->index();
             $table->bigInteger('latitude');
             $table->bigInteger('longitude');
             $table->timestamps();
+
+            $table->foreignId('city_id');
+            $table->foreign('city_id')->on('cities')->references('id')->cascadeOnDelete();
         });
     }
 
