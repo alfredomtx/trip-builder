@@ -10,10 +10,11 @@ use Tests\TestCase;
 class AuthTest extends TestCase
 {
     use WithFaker;
-    public function test_register_works_as_expected()
+    use RefreshDatabase;
+
+    public function test_register()
     {
-        // Assert
-        // create an user
+        // Arrange
         $user = [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
@@ -30,14 +31,12 @@ class AuthTest extends TestCase
         $response->assertJsonPath('user.email', $user['email']);
     }
 
-    public function test_login_returns_a_valid_token()
+    public function test_login()
     {
-        // Assert
-        // create an user
+        // Arrange
         $user = User::factory()->create(['password' => bcrypt('test123')]);
 
-        // Act 1 
-        // login
+        // Act 1
         $response = $this->post('/api/login', ['email' => $user->email, 'password' => 'test123']);
         $loginResponse = json_decode($response->getContent());
 

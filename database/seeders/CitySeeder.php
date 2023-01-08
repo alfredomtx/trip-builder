@@ -19,17 +19,23 @@ class CitySeeder extends Seeder
     {
         $this->truncate('cities');
 
-        City::factory()->create([
-            'name' => 'Montreal',
-            'code' => 'YMQ',
-            'timezone' => 'America/Montreal',
-        ]);
-        City::factory()->create([
-            'name' => 'Vancouver',
-            'code' => 'YVR',
-            'timezone' => 'America/Vancouver',
-        ]);
+        self::cityHelper('Montreal', 'YMQ', 'America/Montreal');
+        self::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
 
         City::factory(5)->create();
     }
+
+    public static function cityHelper(string $name, string $code, string $timezone){
+        $city = City::where('code', $code)->first();
+        if ($city){
+            return $city;
+        }
+        return City::factory()->create([
+            'name' => $name,
+            'code' => $code,
+            'timezone' => $timezone,
+        ]);
+    }
+
+
 }

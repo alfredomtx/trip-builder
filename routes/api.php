@@ -24,7 +24,6 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/flights/search', [FlightController::class, 'searchFlights']);
 
-
 Route::prefix('airlines')
     ->name('airlines.') // identifier to prefix in child `->name()` identifiers
     ->middleware('auth:sanctum')

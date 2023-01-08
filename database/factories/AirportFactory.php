@@ -15,16 +15,18 @@ class AirportFactory extends Factory
     public function definition()
     {
         $name = $this->faker->name() . " Airport";
-        // the airport code is unique on database, so lets create the acronum and also add 3 random letters to it.
-        $randomLetters = $this->faker->randomLetter() . $this->faker->randomLetter() . $this->faker->randomLetter();
+        // the airport code is unique on database, so let's create the acronym and also add 3 random letters to it.
+        $randomLetters = '';
+        for ($i = 0; $i < 3; $i++){
+            $randomLetters .= $this->faker->randomLetter();
+        }
         $code = strtoupper(create_acronym_from_words($name) . $randomLetters);
-        
+
         return [
             'name' => $name,
             'code' => $code,
             'latitude' => $this->faker->latitude(),
             'longitude' => $this->faker->longitude(),
-            // FKs
             'city_id' => City::factory(),
         ];
     }

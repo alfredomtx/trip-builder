@@ -12,7 +12,7 @@ use function PHPUnit\Framework\assertEquals;
 class HelpersTest extends TestCase
 {
     /**
-     * Assert that the helper function works as expected, returnin a 2 letter
+     * Assert that the helper function works as expected, returning a 2 letter
      * long acronym for 1 words, and more than 1 for words with more letters
      *
      * @return void
@@ -47,7 +47,7 @@ class HelpersTest extends TestCase
         // Act
         $montrealTimeUtc = convert_time_to_utc_from_timezone($montrealTime, 'America/Montreal');
         $vancouverTimeUtc = convert_time_to_utc_from_timezone($vancouverTime, 'America/Vancouver');
-        
+
         // Assert
         assertEquals($montrealTimeUtc, '18:00');
         assertEquals($vancouverTimeUtc, '23:00');

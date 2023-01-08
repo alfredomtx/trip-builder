@@ -9,10 +9,14 @@ use App\Models\Flight;
 use Database\Seeders\Traits\TruncateTable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
+use Faker\Generator;
+
 
 class FlightSeeder extends Seeder
 {
     use TruncateTable;
+
+
     /**
      * Run the database seeds.
      *
@@ -35,33 +39,13 @@ class FlightSeeder extends Seeder
      */
     public static function montrealToVancouver1Pm()
     {
-        $montreal = City::factory()->make([
-            'name' => 'Montreal',
-            'code' => 'YMQ',
-            'timezone' => 'America/Montreal',
-        ]);
-        $montreal = City::firstOrCreate($montreal->toArray());
+        $faker = app(Generator::class);
 
-        $montrealAirport = Airport::factory()->make([
-            'name' => 'Pierre Elliott Trudeau International',
-            'code' => 'YUL',
-            'city_id' => $montreal->id,
-        ]);
-        $montrealAirport = Airport::firstOrCreate($montrealAirport->toArray());
+        $montreal = CitySeeder::cityHelper('Montreal', 'YMQ', 'America/Montreal');
+        $vancouver = CitySeeder::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
 
-        $vancouver = City::factory()->make([
-            'name' => 'Vancouver',
-            'code' => 'YVR',
-            'timezone' => 'America/Vancouver',
-        ]);
-        $vancouver = City::firstOrCreate($vancouver->toArray());
-
-        $vancouverAirport = Airport::factory()->make([
-            'name' => 'Vancouver International',
-            'code' => 'YVR',
-            'city_id' => $vancouver->id,
-        ]);
-        $vancouverAirport = Airport::firstOrCreate($vancouverAirport->toArray());
+        $montrealAirport = AirportSeeder::airportHelper('Montreal', 'YUL', $montreal->id);
+        $vancouverAirport = AirportSeeder::airportHelper('Vancouver', 'YVR', $vancouver->id);
 
         $airline = Airline::factory()->make([
             'name' => "Air Canada",

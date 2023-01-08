@@ -20,17 +20,25 @@ class AirportSeeder extends Seeder
     {
         $this->truncate('airports');
 
-        Airport::factory()->create([
-            'name' => 'Pierre Elliott Trudeau International',
-            'code' => 'YUL',
-            'city_id' => 1,
-        ]);
-        Airport::factory()->create([
-            'name' => 'Vancouver International',
-            'code' => 'YVR',
-            'city_id' => 2,
-        ]);
+        $montreal = CitySeeder::cityHelper('Montreal', 'YMQ', 'America/Montreal');
+        $vancouver = CitySeeder::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
+
+        Self::airportHelper('Montreal', 'YUL', $montreal->id);
+        Self::airportHelper('Vancouver', 'YVR', $vancouver->id);
 
         Airport::factory(5)->create();
+    }
+
+    public static function airportHelper(string $name, string $code, int $cityId)
+    {
+        $airport = Airport::where('code', $code)->first();
+        if ($airport){
+            return $airport;
+        }
+        return  Airport::factory()->create([
+            'name' => $name,
+            'code' => $code,
+            'city_id' => $cityId,
+        ]);
     }
 }
