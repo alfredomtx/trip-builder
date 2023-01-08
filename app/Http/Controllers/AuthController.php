@@ -7,8 +7,20 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @group Auth
+ *
+ */
 class AuthController extends Controller
 {
+    /**
+     * Register
+     *
+     * Register a user for authentication.
+     *
+     * @unauthenticated
+     *
+     */
     public function register(Request $request) {
         $fields = $request->validate([
             'name' => ['required', 'string'],
@@ -32,6 +44,14 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
+    /**
+     * Authenticate
+     *
+     * Authenticate user and returns a `bearer` token.
+     *
+     * @unauthenticated
+     *
+     */
     public function login(Request $request) {
         $fields = $request->validate([
             'email' => ['required', 'string', 'email'],
@@ -58,12 +78,18 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
+    /**
+     * Logout
+     *
+     * @response 200 {
+            "message": "Logged out"
+     * }
+     */
     public function logout(Request $request){
         auth()->user()->tokens()->delete();
 
-        return [
+        return response([
             'message' => 'Logged out'
-        ];
-
+        ], 200);
     }
 }

@@ -16,6 +16,7 @@
         "barryvdh/laravel-ide-helper": "^2.12",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
+        "knuckleswtf/scribe": "^4.11",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
@@ -41,6 +42,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [

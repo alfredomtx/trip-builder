@@ -1,0 +1,442 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "Trip Builder API",
+        "_postman_id": "2297cc8a-99dd-4879-a5fa-3f030957a9a7",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Airline",
+            "description": "\nAPIs to manage the airline resource.",
+            "item": [
+                {
+                    "name": "Display a listing of the resources",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/airlines",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/airlines"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get a list of airlines."
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Display the specified resource.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/airlines\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/airlines\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the airline."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create new resource",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/airlines",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/airlines"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw\",\"code\":\"ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay\"}"
+                        },
+                        "description": "Store a newly created resource in storage."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update the specified resource in storage.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/airlines\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/airlines\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the airline."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Air Canada\",\"code\":\"AC\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete the specified resource from storage.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/airlines\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/airlines\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the airline."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 204,
+                            "body": "{}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "description": "",
+            "item": [
+                {
+                    "name": "Authenticate",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"xkuphal@example.org\",\"password\":\"Hzs4[BBx3O+|~\"}"
+                        },
+                        "description": "Authenticate user and returns a `bearer` token.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Logged out\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Register user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"est\",\"email\":\"henri17@example.com\",\"password\":\"I*<_Aq!n2L?\\\/(-PFTj\"}"
+                        },
+                        "description": "Register your user for authentication.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Flight",
+            "description": "\nAPIs to search for flights.",
+            "item": [
+                {
+                    "name": "Search for flights",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/flights\/search",
+                            "query": [
+                                {
+                                    "key": "departure_airport",
+                                    "value": "YUL.",
+                                    "description": "The departure airport `code`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "arrival_airport",
+                                    "value": "YVR.",
+                                    "description": "The arrival airport `code`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "departure_date",
+                                    "value": "vel",
+                                    "description": "date Date of departure. Format `YYYY-MM-DD`",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "trip_type",
+                                    "value": "quibusdam",
+                                    "description": "Can be a `one-way` or `round-trip`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "return_date",
+                                    "value": "minima",
+                                    "description": "date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "20",
+                                    "description": "Size per page. Defaults to 10.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page to view.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/flights\/search?departure_airport=YUL.&arrival_airport=YVR.&departure_date=vel&trip_type=quibusdam&return_date=minima&page_size=20&page=1"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"departure_airport\":\"tcwygiwdwerhmd\",\"arrival_airport\":\"jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp\",\"departure_time\":\"17:24\",\"page_size\":12}"
+                        },
+                        "description": "Search for flights according to search criteria and return paginated result."
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "x-ratelimit-limit",
+                                    "value": "60"
+                                },
+                                {
+                                    "key": "x-ratelimit-remaining",
+                                    "value": "56"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 422,
+                            "body": "{\"message\":\"The given data was invalid.\",\"errors\":{\"departure_airport\":[\"The selected departure airport is invalid.\"],\"arrival_airport\":[\"The selected arrival airport is invalid.\"]}}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "hahaha",
+                "value": null,
+                "type": "string"
+            }
+        ]
+    }
+}

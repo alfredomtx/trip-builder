@@ -24,6 +24,6 @@ class AirlineSeeder extends Seeder
             'code' => 'AC',
         ]);
 
-        Airline::factory(5)->create();
+//        Airline::factory(5)->create();
     }
 }

@@ -14,74 +14,70 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FlightTest extends TestCase
 {
-
     use WithFaker;
-    private static $requiredFields = [
+    use RefreshDatabase;
+
+    protected array $requiredFields = [
         'departure_airport',
         'arrival_airport',
     ];
 
-    public function test_request_missing_required_fields_returns_422()
-    {
-        foreach (Self::$requiredFields as $removedField){
-            // Arrange
-            $fields = array_values(Self::$requiredFields);
-            unset($fields[array_search($removedField, $fields)]);
-
-            // Act
-            $response = $this->postJson('/api/trips/search');
-
-            // Assert
-            $response->assertStatus(422);
-            $response->assertJsonPath('message', 'The given data was invalid.');
-        }
-    }
-
-    /**
-     *
-     */
     public function test_departure_and_arrival_filters_work_for_one_round_trip()
     {
         // Arrange
-        // create some random flights to ensure diversification
         Flight::factory(5)->create();
         // create the flight we will actually search for
         $flight = FlightSeeder::montrealToVancouver1Pm();
 
-        $request = [
+        $params = [
             'departure_airport' => $flight->departureAirport()->first()->code,
             'arrival_airport' => $flight->arrivalAirport()->first()->code,
-            'paginate' => false,
         ];
 
         // Act
-        $response = $this->post('/api/trips/search', $request);
-        $flightsResponse = json_decode($response->getContent(), true);
-        dd($flightsResponse);
+        $response = $this->json('GET', '/api/flights/search', $params);
 
         // Assert
-        $response->assertStatus(200);
-
-        // filter from the response the $departureFlight
-        $filteredFlights = array_filter($flightsResponse, function ($flightResponse) use ($flight) {
-            if ($flightResponse['id'] == $flight->id){
-                 return true;
-            }
-            return false;
-        });
-
+        $data = $response->assertStatus(200)->json('data');
+        // pagination
+        $this->assertEquals(1, $response->json('meta.current_page'));
         // print_r($flight);
-        dd($filteredFlights);
-
         // assert that at least one flight has been returned
-        $this->assertTrue(count($filteredFlights) > 1);
+        $this->assertTrue(count($data) > 1);
+        // loop through the `flights` returned and find the flight with the ID we expect
 
-        $flight = reset($filteredFlights);
+        $flight = reset($data);
         $this->assertEquals($flight->number, $flight['number']);
 
         // Clean
         Flight::query()->delete();
     }
+
+    public function test_departure_and_arrival_filters_work_for_two_round_trip()
+    {
+
+    }
+
+
+    public function test_request_missing_required_fields_returns_422()
+    {
+        // TODO: get fillables
+        foreach ($this->requiredFields as $removedField){
+            // Arrange
+            $fields = array_values($this->requiredFields);
+            unset($fields[array_search($removedField, $fields)]);
+
+            // Act
+            $response = $this->json('GET', '/api/flights/search', $fields);
+
+            // Assert
+            $this->assertEquals(422, $response->status(),
+                "The API did not fail with status 422 when missing field `{$removedField}`."
+            );
+            $response->assertJsonPath('message', 'The given data was invalid.');
+        }
+    }
+
 
 }
 

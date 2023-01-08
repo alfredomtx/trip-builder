@@ -22,7 +22,7 @@ class CitySeeder extends Seeder
         self::cityHelper('Montreal', 'YMQ', 'America/Montreal');
         self::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
 
-        City::factory(5)->create();
+//        City::factory(5)->create();
     }
 
     public static function cityHelper(string $name, string $code, string $timezone){

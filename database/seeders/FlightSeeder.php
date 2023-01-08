@@ -28,7 +28,7 @@ class FlightSeeder extends Seeder
 
         self::montrealToVancouver1Pm();
 
-        Flight::factory(5)->create();
+//        Flight::factory(5)->create();
 
     }
 

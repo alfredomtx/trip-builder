@@ -26,7 +26,7 @@ class AirportSeeder extends Seeder
         Self::airportHelper('Montreal', 'YUL', $montreal->id);
         Self::airportHelper('Vancouver', 'YVR', $vancouver->id);
 
-        Airport::factory(5)->create();
+//        Airport::factory(5)->create();
     }
 
     public static function airportHelper(string $name, string $code, int $cityId)

@@ -1,0 +1,535 @@
+openapi: 3.0.3
+info:
+  title: 'Trip Builder API'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/airlines:
+    get:
+      summary: 'Display a listing of the resources'
+      operationId: displayAListingOfTheResources
+      description: 'Get a list of airlines.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Airline
+    post:
+      summary: 'Create new resource'
+      operationId: createNewResource
+      description: 'Store a newly created resource in storage.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Airline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must be at least 2 characters.'
+                  example: oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw
+                code:
+                  type: string
+                  description: 'Must be at least 2 characters.'
+                  example: ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay
+              required:
+                - name
+                - code
+  '/api/airlines/{id}':
+    get:
+      summary: 'Display the specified resource.'
+      operationId: displayTheSpecifiedResource
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Airline
+    put:
+      summary: 'Update the specified resource in storage.'
+      operationId: updateTheSpecifiedResourceInStorage
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Airline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Name of the airline.'
+                  example: 'Air Canada'
+                code:
+                  type: string
+                  description: 'IATA Code of the airline.'
+                  example: AC
+              required:
+                - name
+                - code
+    delete:
+      summary: 'Delete the specified resource from storage.'
+      operationId: deleteTheSpecifiedResourceFromStorage
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        204:
+          description: ''
+      tags:
+        - Airline
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the airline.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/login:
+    post:
+      summary: Authenticate
+      operationId: authenticate
+      description: 'Authenticate user and returns a `bearer` token.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: xkuphal@example.org
+                password:
+                  type: string
+                  description: ''
+                  example: 'Hzs4[BBx3O+|~'
+              required:
+                - email
+                - password
+      security: []
+  /api/logout:
+    post:
+      summary: Logout
+      operationId: logout
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Logged out'
+                properties:
+                  message:
+                    type: string
+                    example: 'Logged out'
+      tags:
+        - Auth
+  /api/register:
+    post:
+      summary: 'Register user'
+      operationId: registerUser
+      description: 'Register your user for authentication.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: est
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: henri17@example.com
+                password:
+                  type: string
+                  description: ''
+                  example: 'I*<_Aq!n2L?/(-PFTj'
+              required:
+                - name
+                - email
+                - password
+      security: []
+  /api/flights/search:
+    get:
+      summary: 'Search for flights'
+      operationId: searchForFlights
+      description: 'Search for flights according to search criteria and return paginated result.'
+      parameters:
+        -
+          in: query
+          name: departure_airport
+          description: 'The departure airport `code`.'
+          example: YUL.
+          required: true
+          schema:
+            type: string
+            description: 'The departure airport `code`.'
+            example: YUL.
+        -
+          in: query
+          name: arrival_airport
+          description: 'The arrival airport `code`.'
+          example: YVR.
+          required: true
+          schema:
+            type: string
+            description: 'The arrival airport `code`.'
+            example: YVR.
+        -
+          in: query
+          name: departure_date
+          description: 'date Date of departure. Format `YYYY-MM-DD`'
+          example: vel
+          required: true
+          schema:
+            type: string
+            description: 'date Date of departure. Format `YYYY-MM-DD`'
+            example: vel
+        -
+          in: query
+          name: trip_type
+          description: 'Can be a `one-way` or `round-trip`.'
+          example: quibusdam
+          required: true
+          schema:
+            type: string
+            description: 'Can be a `one-way` or `round-trip`.'
+            example: quibusdam
+        -
+          in: query
+          name: return_date
+          description: 'date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`'
+          example: minima
+          required: false
+          schema:
+            type: string
+            description: 'date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`'
+            example: minima
+        -
+          in: query
+          name: page_size
+          description: 'Size per page. Defaults to 10.'
+          example: 20
+          required: false
+          schema:
+            type: integer
+            description: 'Size per page. Defaults to 10.'
+            example: 20
+        -
+          in: query
+          name: page
+          description: 'Page to view.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'Page to view.'
+            example: 1
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {ACCESS_TOKEN}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The given data was invalid.'
+                  errors:
+                    departure_airport:
+                      - 'The selected departure airport is invalid.'
+                    arrival_airport:
+                      - 'The selected arrival airport is invalid.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The given data was invalid.'
+                  errors:
+                    type: object
+                    properties:
+                      departure_airport:
+                        type: array
+                        example:
+                          - 'The selected departure airport is invalid.'
+                        items:
+                          type: string
+                      arrival_airport:
+                        type: array
+                        example:
+                          - 'The selected arrival airport is invalid.'
+                        items:
+                          type: string
+      tags:
+        - Flight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                departure_airport:
+                  type: string
+                  description: 'Must be at least 2 characters.'
+                  example: tcwygiwdwerhmd
+                arrival_airport:
+                  type: string
+                  description: 'Must be at least 2 characters.'
+                  example: jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp
+                departure_time:
+                  type: string
+                  description: 'Must be a valid date in the format <code>H:i</code>.'
+                  example: '17:24'
+                page_size:
+                  type: integer
+                  description: 'Must not be greater than 100.'
+                  example: 12
+              required:
+                - departure_airport
+                - arrival_airport
+tags:
+  -
+    name: Airline
+    description: "\nAPIs to manage the airline resource."
+  -
+    name: Auth
+    description: ''
+  -
+    name: Flight
+    description: "\nAPIs to search for flights."
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: ''
+security:
+  -
+    default: []

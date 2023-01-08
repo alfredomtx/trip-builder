@@ -15,6 +15,11 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use PHP_CodeSniffer\Reports\Json;
 
+/**
+ * @group Airline
+ *
+ * APIs to manage the airline resource.
+ */
 class AirlineController extends Controller
 {
     protected AirlineService $service;
@@ -25,7 +30,9 @@ class AirlineController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resources
+     *
+     * Get a list of airlines.
      *
      * @param Request $request
      * @return ResourceCollection
@@ -43,6 +50,8 @@ class AirlineController extends Controller
     }
 
     /**
+     * Create new resource
+     *
      * Store a newly created resource in storage.
      *
      * @param AirlineRequest $request
@@ -51,8 +60,6 @@ class AirlineController extends Controller
      */
     public function store(AirlineRequest $request, AirlineRepository $repository)
     {
-        $request->validated();
-
         $created = $this->service->insert($request->only([
             'name',
             'code',
@@ -75,6 +82,9 @@ class AirlineController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @bodyParam name string required Name of the airline. Example: Air Canada
+     * @bodyParam code string required IATA Code of the airline. Example: AC
+     *
      * @param AirlineRequest $request
      * @param int $id
      * @return AirlineResource
@@ -82,8 +92,6 @@ class AirlineController extends Controller
      */
     public function update(AirlineRequest $request, int $id)
     {
-        $request->validated();
-
         $resource = $this->service->update($id, $request->only([
             'name',
             'code',
@@ -93,6 +101,8 @@ class AirlineController extends Controller
 
     /**
      * Delete the specified resource from storage.
+     *
+     * @response 204
      *
      * @param int $id
      * @return Response
