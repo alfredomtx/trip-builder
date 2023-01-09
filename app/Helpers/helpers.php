@@ -2,9 +2,9 @@
 
 if (! function_exists('create_acronym_from_words')) {
     /**
-     * Returns an uppercase acronnym string from the words parameter.
+     * Returns an uppercase acronym string from the `words` parameter.
      * The words can be separated by space( ), comma(,), underscore(_) and dash(=).
-     * 
+     *
      * If the words has only one word, the acronym will be the first and last letter.
      * @param string $words
      * @return string
@@ -31,8 +31,6 @@ if (! function_exists('create_acronym_from_words')) {
     }
 }
 
-
-
 if (! function_exists('convert_time_from_timezone_to_utc')) {
     /**
      * Convert an UTC time to the timezone, return `date->format('H:i')`
@@ -40,11 +38,12 @@ if (! function_exists('convert_time_from_timezone_to_utc')) {
      * @param string $timezone
      * @return string
      */
-    function convert_time_from_timezone_to_utc(string $time, string $timezone): string {
+    function convert_time_from_timezone_to_utc(string $time, string $timezone): string
+    {
         $date = new DateTime($time, new DateTimeZone('UTC'));
         $date->setTimezone(new DateTimeZone($timezone));
 
-        return $date->format('H:i');
+        return $date->format('H:i:s');
     }
 }
 
@@ -55,13 +54,40 @@ if (! function_exists('convert_time_to_utc_from_timezone')) {
      * @param string $timezone
      * @return string
      */
-    function convert_time_to_utc_from_timezone(string $time, string $timezone): string {
+    function convert_time_to_utc_from_timezone(string $time, string $timezone): string
+    {
         $date = new DateTime($time, new DateTimeZone($timezone));
         $date->setTimezone(new DateTimeZone('UTC'));
 
-        return $date->format('H:i');
+        return $date->format('H:i:s');
     }
 }
+
+if (! function_exists('format_flight_price')) {
+    /**
+     * Format price with 2 decimal places
+     * @param string $price
+     * @return string
+     */
+    function format_flight_price(string $price): string
+    {
+        return number_format((float) $price, 2, '.', '');
+    }
+
+}
+
+if (! function_exists('camel_case_to_snake')) {
+
+    function camel_case_to_snake($string)
+    {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $string));
+    }
+
+}
+
+
+
+
 
 
 

@@ -17,84 +17,41 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @group Flight
+ *
+ * API to search for flights.
+ */
 class FlightController extends Controller
 {
+
+    protected FlightService $service;
+
+    public function __construct(FlightService $service)
+    {
+        $this->service = $service;
+    }
     /**
+     * Search flights
+     *
      * Search for flights according to search criteria and return paginated result.
      *
+     * @queryParam departure_airport string required The departure airport `code`. Example: YUL.
+     * @queryParam arrival_airport string required The arrival airport `code`. Example: YVR.
+     * @queryParam departure_date date required Date of departure. Format `YYYY-MM-DD`
+     * @queryParam trip_type string required Can be a `one-way` or `round-trip`.
+     * @queryParam return_date date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`
+     *
+     * @queryParam page_size int Size per page. Defaults to 10. Example: 20
+     * @queryParam page int Page to view. Example: 1
+     * @unauthenticated
+     *
      * @param FlightRequest $request
-     * @param FlightService $service
-     * @return ResourceCollection
-     */
-    public function searchFlights(FlightRequest $request, FlightService $service)
-    {
-        $filters = $request->validated();
-
-        $flights = $service->searchFlights($filters);
-
-        return FlightResource::collection($flights);
-    }
-
-    /**
-     * @param $flights
      * @return array
      */
-    private function getFlightsResponse($flights)
+    public function searchFlights(FlightRequest $request)
     {
-        /*
-            "flights": [{
-                "airline": "AC",
-                "number": "301",
-                "departure_airport": "YUL",
-                "departure_datetime": "2021-02-01 07:35",
-                "arrival_airport": "YVR",
-                "arrival_datetime": "2021-02-01 10:05",
-                "price": "373.23"
-            },
-            {
-                ...
-            }
-        ]
-        */
-
-        $formattedFlights = [];
-        $totalPrice = 0;
-        foreach($flights as $flight){
-            $price = $this->formatPriceTwoDecimalPlaces($flight->price);
-            $flightData = [
-                'airline' => $flight->airline()->first()->code,
-                'number' => $flight->number,
-                'departure_airport' => $flight->departureAirport()->first()->code,
-                'departure_datetime' => $this->formatFlightDatetime($flight->departure_time),
-                'arrival_airport' => $flight->arrivalAirport()->first()->code,
-                'arrival_datetime' => $this->formatFlightDatetime($flight->arrival_time),
-                'price' => $price,
-            ];
-
-            $formattedFlights[] = $flightData;
-            $totalPrice += $price;
-        }
-
-        $flightsResponse = [
-            'price' => $this->formatPriceTwoDecimalPlaces((string) $totalPrice),
-            'flights' => $formattedFlights
-        ];
-
-        return $flightsResponse;
-    }
-
-    /**
-     * Format the flight time with today's date
-     * @param string $time
-     * @return string
-     */
-    private function formatFlightDatetime(string $time) {
-        $date = DateTime::createFromFormat("H:i:s", $time);
-        return $date->format("Y-m-d H:i");
-    }
-
-    private function formatPriceTwoDecimalPlaces(string $price) {
-        return number_format((float) $price, 2, '.', '');
+        return $this->service->searchFlights($request->validated());
     }
 
 }

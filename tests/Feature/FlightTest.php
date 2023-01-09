@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Responses\FlightResponse;
 use Tests\TestCase;
 use App\Models\City;
 use App\Models\Flight;
@@ -17,48 +18,62 @@ class FlightTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+    const URI = '/api/flights';
+
     protected array $requiredFields = [
         'departure_airport',
         'arrival_airport',
     ];
 
-    public function test_departure_and_arrival_filters_work_for_one_round_trip()
+    public function test_one_way_trip()
     {
         // Arrange
-        Flight::factory(5)->create();
         // create the flight we will actually search for
-        $flight = FlightSeeder::montrealToVancouver1Pm();
+        Flight::factory(5)->create();
+        FlightSeeder::montrealToVancouver("01:00 PM", "03:00 PM", $this->faker->date());
+        FlightSeeder::montrealToVancouver("03:00 PM", "0:00 PM", $this->faker->date());
+        // flights that we will check
+        $dummies[] = FlightSeeder::montrealToVancouver("01:00 PM", "03:00 PM");
+        $dummies[] = FlightSeeder::montrealToVancouver("03:00 PM", "05:00 PM");
 
         $params = [
-            'departure_airport' => $flight->departureAirport()->first()->code,
-            'arrival_airport' => $flight->arrivalAirport()->first()->code,
+            'departure_airport' => $dummies[0]->departureAirport()->first()->code,
+            'arrival_airport' => $dummies[0]->arrivalAirport()->first()->code,
+            'departure_date' => $dummies[0]->departure_date,
+            'type' => 'one-way',
         ];
 
         // Act
-        $response = $this->json('GET', '/api/flights/search', $params);
+        $response = $this->json('GET', self::URI . '/search', $params);
 
         // Assert
         $data = $response->assertStatus(200)->json('data');
         // pagination
         $this->assertEquals(1, $response->json('meta.current_page'));
-        // print_r($flight);
-        // assert that at least one flight has been returned
-        $this->assertTrue(count($data) > 1);
-        // loop through the `flights` returned and find the flight with the ID we expect
+        // same number of flights returned
+        $this->assertTrue(count($data) == 2);
 
-        $flight = reset($data);
-        $this->assertEquals($flight->number, $flight['number']);
+        $i = 0;
+        // loop through each trip returned and validate the flight data
+        foreach ($data as $trip){
+            // validate price
+            $this->assertEquals($trip['price'], $dummies[$i]->price);
 
-        // Clean
-        Flight::query()->delete();
+            $flight = reset($trip['flights']);
+            $dummyFlightResponse = FlightResponse::fromFlight($dummies[$i])->toArray();
+            // loop through every attribute of `FlightResponse` and validate if they are the same
+            foreach (FlightResponse::getAttributes() as $attribute){
+                // attributes in json response are snake case
+                $attribute = camel_case_to_snake($attribute->name);
+                $this->assertSame($dummyFlightResponse[$attribute], $flight[$attribute]
+                    , "Attribute $attribute is not equal in flight $i:\n{$dummyFlightResponse[$attribute]} = {$flight[$attribute]}."
+                );
+            }
+            $i++;
+        };
     }
 
-    public function test_departure_and_arrival_filters_work_for_two_round_trip()
-    {
-
-    }
-
-
+    // TODO: refactor this test
     public function test_request_missing_required_fields_returns_422()
     {
         // TODO: get fillables
@@ -68,7 +83,7 @@ class FlightTest extends TestCase
             unset($fields[array_search($removedField, $fields)]);
 
             // Act
-            $response = $this->json('GET', '/api/flights/search', $fields);
+            $response = $this->json('GET', self::URI . '/search', $fields);
 
             // Assert
             $this->assertEquals(422, $response->status(),

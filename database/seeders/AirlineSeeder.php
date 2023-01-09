@@ -19,11 +19,11 @@ class AirlineSeeder extends Seeder
     {
         $this->truncate('airlines');
 
-        Airline::factory()->create([
-            'name' => "Air Canada",
-            'code' => 'AC',
-        ]);
+        Airline::factory()->create(['name' => "Air Canada", 'code' => 'AC']);
+        Airline::factory()->create(['name' => "LATAM Brasil", 'code' => 'JJ']);
+        Airline::factory()->create(['name' => "Emirates Airlines", 'code' => 'EK']);
 
-//        Airline::factory(5)->create();
+        Airline::factory(20)->create();
     }
+
 }

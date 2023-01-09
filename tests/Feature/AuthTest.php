@@ -48,4 +48,26 @@ class AuthTest extends TestCase
         // assert that the token is in the expected format `userId|token`
         $this->assertStringContainsString('|', $loginResponse->token);
     }
+
+
+    /**
+     * Test if all authenticated endpoints return 401 Unauthorized
+     */
+    public function test_airline_endpoints(){
+        // Arrange
+        $authenticatedEndpoints = [
+            ['method' => 'GET'      , 'url' => '/api/airlines'],
+            ['method' => 'POST'     , 'url' => '/api/airlines'],
+            ['method' => 'GET'      , 'url' => '/api/airlines' . '/1'],
+            ['method' => 'PUT'      , 'url' => '/api/airlines' . '/1'],
+            ['method' => 'DELETE'   , 'url' => '/api/airlines' . '/1'],
+        ];
+
+        foreach($authenticatedEndpoints as $endpoint){
+            // Act
+            $response = $this->json($endpoint['method'], $endpoint['url']);
+            // Assert
+            $response->assertStatus(401);
+        }
+    }
 }

@@ -14,7 +14,9 @@ class Flight extends Model
     protected $fillable = [
         'number',
         'price',
+        'departure_date',
         'departure_time',
+        'arrival_departure',
         'arrival_time',
         'airline_id',
         'departure_airport_id',
@@ -39,19 +41,14 @@ class Flight extends Model
         return $this->belongsTo(Airport::class, 'arrival_airport_id');
     }
 
-
     /**
-     * Summary of searchFlights
      * @param array $filters
      * @return Collection
      */
+    public static function searchFlights(array $filters)
+    {
 
-    public static function searchFlights(array $filters): Collection {
-
-        $query = Flight::select(
-                'number',
-                'flights.id AS flight_id',
-            );
+        $query = Flight::query();
 
         // joining and filtering with the `departure airport`
         $query->join('airports AS departure_airport', function ($join) use ($filters) {
@@ -65,12 +62,14 @@ class Flight extends Model
                 ->where('arrival_airport.code', $filters['arrival_airport']);
         });
 
-
-
-//        die($query->toSql());
+        if ($filters['departure_date'] ?? false){
+            $query->where('departure_date', $filters['departure_date']);
+        }
+        if ($filters['return_date'] ?? false){
+            $query->where('return_date', $filters['departure_date']);
+        }
 
         return $query->get();
-
     }
 
     public function scopeFilter($query, array $filters){
@@ -86,8 +85,11 @@ class Flight extends Model
                 ->where('arrival_airport.code', $filters['arrival_airport']);
         });
 
-        if ($filters['departure_time'] ?? false){
-            $query->where('departure_time', '>=', $filters['departure_time']);
+        if ($filters['departure_date'] ?? false){
+            $query->where('departure_date', '>=', $filters['departure_time']);
+        }
+        if ($filters['arrival_date'] ?? false){
+            $query->where('arrival_date', '>=', $filters['departure_time']);
         }
 
         // die($query->toSql());

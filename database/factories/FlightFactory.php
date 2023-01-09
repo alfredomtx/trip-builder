@@ -21,7 +21,9 @@ class FlightFactory extends Factory
         return [
             'number' => $number,
             'price' => $price,
+            'departure_date' => $this->faker->date(),
             'departure_time' => date('H:i', strtotime($this->faker->time())),
+            'arrival_date' => $this->faker->date(),
             'arrival_time' => date('H:i', strtotime($this->faker->time())),
             // FKs
             'airline_id' => Airline::factory(),

@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Flight;
 use Database\Seeders\Traits\TruncateTable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Faker\Generator;
 
@@ -15,7 +16,6 @@ use Faker\Generator;
 class FlightSeeder extends Seeder
 {
     use TruncateTable;
-
 
     /**
      * Run the database seeds.
@@ -25,8 +25,15 @@ class FlightSeeder extends Seeder
     public function run()
     {
         $this->truncate('flights');
+        $faker = app(Generator::class);
 
-        self::montrealToVancouver1Pm();
+        self::montrealToVancouver("01:00 PM", "03:00 PM");
+        self::montrealToVancouver("03:00 PM", "05:00 PM");
+        self::montrealToVancouver("07:00 PM", "09:00 PM");
+
+        self::montrealToVancouver("01:00 PM", "03:00 PM", $faker->date());
+        self::montrealToVancouver("03:00 PM", "05:00 PM", $faker->date());
+        self::montrealToVancouver("07:00 PM", "09:00 PM", $faker->date());
 
 //        Flight::factory(5)->create();
 
@@ -34,13 +41,16 @@ class FlightSeeder extends Seeder
 
     /**
      * Create or return a flight leaving from Montreal at `1 PM` and arriving at Vancouver at `3 PM`.
+     * The departure and arrival dates are the current day.
      * Local times converted to UTC on insert.
-     * @return Flight
+     *
+     * @param string $departureTimeAmPm Example: 01:00 PM
+     * @param string $arrivalTimeAmPm Example: 03:00 PM
+     * @param string|null $date If null, will generate with today's date
+     * @return Collection|Model
      */
-    public static function montrealToVancouver1Pm()
+    public static function montrealToVancouver(string $departureTimeAmPm, string $arrivalTimeAmPm, string $date = null)
     {
-        $faker = app(Generator::class);
-
         $montreal = CitySeeder::cityHelper('Montreal', 'YMQ', 'America/Montreal');
         $vancouver = CitySeeder::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
 
@@ -53,10 +63,15 @@ class FlightSeeder extends Seeder
         ]);
         $airline = Airline::firstOrCreate($airline->toArray());
 
-        $montrealTime = date("H:i", strtotime("01:00 PM"));
-        $vancouverTime = date("H:i", strtotime("03:00 PM"));
+        $montrealTime = date("H:i", strtotime($departureTimeAmPm));
+        $vancouverTime = date("H:i", strtotime($arrivalTimeAmPm));
+
+        $date = ($date === null) ? date('Y-m-d') : $date;
 
         return Flight::factory()->create([
+            'departure_date' => $date,
+            'arrival_date' => $date,
+            'departure_time' => convert_time_to_utc_from_timezone($montrealTime, 'America/Montreal'),
             'departure_time' => convert_time_to_utc_from_timezone($montrealTime, 'America/Montreal'),
             'arrival_time' => convert_time_to_utc_from_timezone($vancouverTime, 'America/Vancouver'),
             'airline_id' => $airline->id,

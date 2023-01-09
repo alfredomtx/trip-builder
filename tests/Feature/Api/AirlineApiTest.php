@@ -12,28 +12,15 @@ class AirlineApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected string $uri = '/api/airlines';
+    const URI = '/api/airlines';
 
-    /**
-     * Test if all authenticated endpoints return 401 Unauthorized
-     */
-    public function test_endpoints_require_authentication(){
-        // Arrange
-        $authenticatedEndpoints = [
-            ['method' => 'GET'      , 'url' => $this->uri],
-            ['method' => 'POST'     , 'url' => $this->uri],
-            ['method' => 'GET'      , 'url' => $this->uri . '/1'],
-            ['method' => 'PUT'      , 'url' => $this->uri . '/1'],
-            ['method' => 'DELETE'   , 'url' => $this->uri . '/1'],
-        ];
-
-        foreach($authenticatedEndpoints as $endpoint){
-            // Act
-            $response = $this->json($endpoint['method'], $endpoint['url']);
-            // Assert
-            $response->assertStatus(401);
-        }
+    public function setUp(): void
+    {
+        parent::setUp();
+        $user = User::factory()->create();
+        $this->actingAs($user);
     }
+
     public function test_index(){
         // Arrange
         $numberOfResources = 5;
@@ -41,9 +28,7 @@ class AirlineApiTest extends TestCase
         $dummiesIds = $dummies->map(fn ($dummy) => $dummy->id)->toArray();
 
         // Act
-        $response = $this
-            ->actingAs(User::factory()->create())
-            ->getJson($this->uri);
+        $response = $this->getJson(self::URI);
 
         $data = $response->assertStatus(200)->json('data');
 
@@ -55,7 +40,7 @@ class AirlineApiTest extends TestCase
         // loop through and check if each `id` from the resources returned are in the resources created before
         collect($data)->each(function ($airline) use ($dummiesIds) {
             $this->assertTrue(in_array($airline['id'], $dummiesIds),
-                '`id` ' . $airline['id']  . ' is missing in the response'
+                '`id` ' . $airline['id']  . ' is missing in the response.'
             );
         });
     }
@@ -65,9 +50,7 @@ class AirlineApiTest extends TestCase
         $dummy = Airline::factory()->create();
 
         // Act
-        $response = $this
-            ->actingAs(User::factory()->create())
-            ->getJson($this->uri . '/' . $dummy->id);
+        $response = $this->getJson(self::URI . '/' . $dummy->id);
 
         // Assert
         $result = $response->assertStatus(200)->json('data');
@@ -79,9 +62,7 @@ class AirlineApiTest extends TestCase
         $dummy = Airline::factory()->make();
 
         // Act
-        $response = $this
-            ->actingAs(User::factory()->create())
-            ->postJson($this->uri, $dummy->toArray());
+        $response = $this->postJson(self::URI, $dummy->toArray());
 
         // Assert
         $result = $response->assertStatus(201)->json('data');
@@ -110,13 +91,10 @@ class AirlineApiTest extends TestCase
             $body = [
                 $attribute => $dummy2[$attribute],
             ];
-            $response = $this
-                ->actingAs($user)
-                ->json('PUT', $this->uri . '/' . $dummy->id, $body);
+            $response = $this->json('PUT', self::URI . '/' . $dummy->id, $body);
 
             // Assert
             $updatedResource = $response->assertStatus(200)->json('data');
-
             $this->assertSame($dummy2[$attribute], $updatedResource[$attribute],
                 "Failed to update model attribute `{$attribute}`."
             );
@@ -128,19 +106,14 @@ class AirlineApiTest extends TestCase
         $dummy = Airline::factory()->create();
 
         // Act 1
-        $response = $this
-            ->actingAs(User::factory()->create())
-            ->deleteJson($this->uri . '/' . $dummy->id);
+        $response = $this->deleteJson(self::URI . '/' . $dummy->id);
 
         // Assert 1
         $result = $response->assertStatus(204);
 
         // Act 2
         // Request for the same resource, it should not be found
-        $response = $this
-            ->actingAs(User::factory()->create())
-            ->getJson($this->uri . '/' . $dummy->id);
-
+        $this->getJson(self::URI . '/' . $dummy->id)->assertStatus(404);
     }
 
 }

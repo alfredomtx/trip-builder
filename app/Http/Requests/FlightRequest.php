@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TripType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class FlightRequest extends FormRequest
 {
@@ -27,10 +29,13 @@ class FlightRequest extends FormRequest
             // Airport code standards have maximum of 4 characters
             'departure_airport' => ['required', 'min:2', 'exists:airports,code'],
             'arrival_airport' => ['required', 'min:2', 'exists:airports,code'],
+            'departure_date' => ['required','date_format:Y-m-d'],
+            'type' => ['required', new Enum(TripType::class)],
 
             // Optional fields
-            'departure_time' => ['nullable','date_format:H:i'],
+            'return_date' => ['nullable', 'required_if:type,round-trip','date','date_format:Y-m-d'],
             'page_size' => ['nullable','integer','max:100'],
+            'page' => ['nullable','integer'],
         ];
     }
 }

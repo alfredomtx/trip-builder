@@ -17,7 +17,8 @@ class HelpersTest extends TestCase
      *
      * @return void
      */
-    public function test_create_acronym_from_words_with_one_word(){
+    public function test_create_acronym_from_words_with_one_word()
+    {
         // Act
         $acronym = create_acronym_from_words("Montreal");
 
@@ -25,7 +26,8 @@ class HelpersTest extends TestCase
         $this->assertEquals("ML", $acronym);
     }
 
-    public function test_create_acronym_from_words_with_many_words(){
+    public function test_create_acronym_from_words_with_many_words()
+    {
         // Act 1
         $acronym = create_acronym_from_words("New York");
 
@@ -39,7 +41,8 @@ class HelpersTest extends TestCase
         $this->assertEquals("NAL", $acronym);
     }
 
-    public function test_convert_time_to_utc_from_timezone(){
+    public function test_convert_time_to_utc_from_timezone()
+    {
         // Arrange
         $montrealTime = date("H:i", strtotime("01:00 PM"));
         $vancouverTime = date("H:i", strtotime("03:00 PM"));
@@ -49,8 +52,14 @@ class HelpersTest extends TestCase
         $vancouverTimeUtc = convert_time_to_utc_from_timezone($vancouverTime, 'America/Vancouver');
 
         // Assert
-        assertEquals($montrealTimeUtc, '18:00');
-        assertEquals($vancouverTimeUtc, '23:00');
+        assertEquals($montrealTimeUtc, '18:00:00');
+        assertEquals($vancouverTimeUtc, '23:00:00');
+    }
+
+    public function test_camel_case_to_snake()
+    {
+        $snake = camel_case_to_snake("camelCase");
+        assertEquals('camel_case', $snake);
     }
 
 }
