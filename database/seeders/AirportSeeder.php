@@ -20,13 +20,37 @@ class AirportSeeder extends Seeder
     {
         $this->truncate('airports');
 
-        $montreal = CitySeeder::cityHelper('Montreal', 'YMQ', 'America/Montreal');
-        $vancouver = CitySeeder::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
+        self::montrealAirport();
+        self::cornwallAirport();
+        self::torontoAirport();
+        self::vancouverAirport();
 
-        Self::airportHelper('Montreal', 'YUL', $montreal->id);
-        Self::airportHelper('Vancouver', 'YVR', $vancouver->id);
 
 //        Airport::factory(5)->create();
+    }
+
+    public static function torontoAirport()
+    {
+        $city = CitySeeder::cityHelper('Toronto', 'YYZ', 'America/Toronto');
+        return self::airportHelper('Toronto Pearson International Airport', 'YYZ', $city->id);
+    }
+
+    public static function cornwallAirport()
+    {
+        $city = CitySeeder::cityHelper('Cornwall', 'YCC', 'America/Toronto');
+        return self::airportHelper('Cornwall Regional Airport', 'YCC', $city->id);
+    }
+
+    public static function montrealAirport()
+    {
+        $city = CitySeeder::cityHelper('Montreal', 'YMQ', 'America/Montreal');
+        return self::airportHelper('Pierre Elliott Trudeau International Airport', 'YUL', $city->id);
+    }
+
+    public static function vancouverAirport()
+    {
+        $city = CitySeeder::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
+        return self::airportHelper('Vancouver International Airport', 'YVR', $city->id);
     }
 
     public static function airportHelper(string $name, string $code, int $cityId)

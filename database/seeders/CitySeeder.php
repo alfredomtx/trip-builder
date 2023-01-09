@@ -20,6 +20,7 @@ class CitySeeder extends Seeder
         $this->truncate('cities');
 
         self::cityHelper('Montreal', 'YMQ', 'America/Montreal');
+        self::cityHelper('Toronto', 'YYZ', 'America/Toronto');
         self::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
 
 //        City::factory(5)->create();

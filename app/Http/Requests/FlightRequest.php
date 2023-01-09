@@ -33,7 +33,12 @@ class FlightRequest extends FormRequest
             'type' => ['required', new Enum(TripType::class)],
 
             // Optional fields
-            'return_date' => ['nullable', 'required_if:type,round-trip','date','date_format:Y-m-d'],
+            'return_date' => ['nullable',
+                'required_if:type,round-trip',
+                'date',
+                'date_format:Y-m-d',
+                'after_or_equal:departure_date',
+            ],
             'page_size' => ['nullable','integer','max:100'],
             'page' => ['nullable','integer'],
         ];
