@@ -46,32 +46,26 @@ class FlightSeeder extends Seeder
             "19:11", '320.63', 302, $returnDate);
 
         // flights for round trip test
-        // departure
+        // departure flights
         self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::cornwallAirport(), "07:35",
             "09:30", '146.42', 317, $departureDate);
         self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "10:10",
             "10:38", '86.23', 318, $departureDate);
         self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "07:00",
             "07:30", '86.23', 320, $departureDate);
-//        self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "05:00",
-//            "06:00", '146.42', 321, $departureDate);
-        // return
+
+        self::flightHelper(AirportSeeder::torontoAirport(), AirportSeeder::vancouverAirport(), "08:00",
+            "11:00", '400.00', 399, $departureDate);
+        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::torontoAirport(), "05:00",
+            "07:00", '273.23', 398, $departureDate);
+
+        // return flights
         self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::cornwallAirport(), "11:30",
             "18:35", '75.41', 346, $returnDate);
         self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::montrealAirport(), "19:15",
             "19:46", '150.56', 347, $returnDate);
 
-        self::flightHelper(AirportSeeder::torontoAirport(), AirportSeeder::vancouverAirport(), "08:00",
-            "11:00", '400.00', 399, $departureDate);
 
-        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::torontoAirport(), "05:00",
-            "07:00", '273.23', 398, $departureDate);
-//        $today = new DateTime();
-//        $tomorrow = $today->modify('+1 day')->format('Y-m-d');
-//        self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::montrealAirport(), "01:00", "08:00", $tomorrow);
-
-//        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::torontoAirport(), "01:00", "03:00");
-//        self::flightHelper(AirportSeeder::torontoAirport(), AirportSeeder::vancouverAirport(), "04:00", "5:00");
 
 //        Flight::factory(5)->create();
 
