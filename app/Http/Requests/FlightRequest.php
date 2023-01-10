@@ -39,6 +39,9 @@ class FlightRequest extends FormRequest
                 'date_format:Y-m-d',
                 'after_or_equal:departure_date',
             ],
+            'stops' => ['nullable','integer','min:0', 'max:2'],
+            'airline' => ['nullable','exists:airline,code'],
+
             'page_size' => ['nullable','integer','max:100'],
             'page' => ['nullable','integer'],
         ];

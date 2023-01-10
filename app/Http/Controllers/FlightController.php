@@ -4,18 +4,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FlightRequest;
-use App\Http\Resources\AirlineResource;
-use App\Http\Resources\FlightResource;
-use App\Models\Airline;
 use App\Services\FlightService;
-use DateTime;
-use DateTimeZone;
-use App\Models\City;
-use App\Models\Flight;
-use App\Models\Airport;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @group Flight
@@ -41,13 +31,14 @@ class FlightController extends Controller
      * @queryParam departure_date date required Date of departure. Format `YYYY-MM-DD`
      * @queryParam trip_type string required Can be a `one-way` or `round-trip`.
      * @queryParam return_date date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`
+     * @queryParam stops int Number of stops, can be 0(direct flights only), 1 or 2. Example: 0.
      *
      * @queryParam page_size int Size per page. Defaults to 10. Example: 20
      * @queryParam page int Page to view. Example: 1
      * @unauthenticated
      *
      * @param FlightRequest $request
-     * @return array
+     * @return ResourceCollection
      */
     public function searchFlights(FlightRequest $request)
     {
