@@ -29,9 +29,9 @@ class TripResponse implements JsonSerializable
     }
 
     /**
-     * @param float $price
+     * @param string $price
      */
-    public function addPrice(float $price)
+    public function setPrice(string $price)
     {
         $this->price = floatval($this->price) + $price;
         $this->price = format_flight_price($this->price);
@@ -39,12 +39,13 @@ class TripResponse implements JsonSerializable
     }
 
     /**
-     * @param FlightResponse $flight
+     * @param array $flights
      */
-    public function addFlight(FlightResponse $flight)
+    public function setFlights(array $flights)
     {
-        $this->flights[] = $flight;
+        $this->flights = $flights;
         return $this;
     }
+
 
 }

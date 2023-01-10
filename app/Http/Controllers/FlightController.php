@@ -51,7 +51,7 @@ class FlightController extends Controller
      */
     public function searchFlights(FlightRequest $request)
     {
-        return $this->service->searchFlights($request->validated());
+        return $this->service->getFlights($request->validated());
     }
 
 }

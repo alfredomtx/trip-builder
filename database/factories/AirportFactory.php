@@ -27,6 +27,7 @@ class AirportFactory extends Factory
             'code' => $code,
             'latitude' => $this->faker->latitude(),
             'longitude' => $this->faker->longitude(),
+            'timezone' => $this->faker->timezone(),
             'city_id' => City::factory(),
         ];
     }

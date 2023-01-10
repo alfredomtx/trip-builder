@@ -31,29 +31,29 @@ class AirportSeeder extends Seeder
 
     public static function torontoAirport()
     {
-        $city = CitySeeder::cityHelper('Toronto', 'YYZ', 'America/Toronto');
-        return self::airportHelper('Toronto Pearson International Airport', 'YYZ', $city->id);
+        $city = CitySeeder::cityHelper('Toronto', 'YYZ');
+        return self::airportHelper('Toronto Pearson International Airport', 'YYZ', $city->id, 'America/Toronto');
     }
 
     public static function cornwallAirport()
     {
-        $city = CitySeeder::cityHelper('Cornwall', 'YCC', 'America/Toronto');
-        return self::airportHelper('Cornwall Regional Airport', 'YCC', $city->id);
+        $city = CitySeeder::cityHelper('Cornwall', 'YCC');
+        return self::airportHelper('Cornwall Regional Airport', 'YCC', $city->id, 'America/Toronto');
     }
 
     public static function montrealAirport()
     {
-        $city = CitySeeder::cityHelper('Montreal', 'YMQ', 'America/Montreal');
-        return self::airportHelper('Pierre Elliott Trudeau International Airport', 'YUL', $city->id);
+        $city = CitySeeder::cityHelper('Montreal', 'YMQ');
+        return self::airportHelper('Pierre Elliott Trudeau International Airport', 'YUL', $city->id, 'America/Montreal');
     }
 
     public static function vancouverAirport()
     {
-        $city = CitySeeder::cityHelper('Vancouver', 'YVR', 'America/Vancouver');
-        return self::airportHelper('Vancouver International Airport', 'YVR', $city->id);
+        $city = CitySeeder::cityHelper('Vancouver', 'YVR');
+        return self::airportHelper('Vancouver International Airport', 'YVR', $city->id, 'America/Vancouver');
     }
 
-    public static function airportHelper(string $name, string $code, int $cityId)
+    public static function airportHelper(string $name, string $code, int $cityId, string $timezone)
     {
         $airport = Airport::where('code', $code)->first();
         if ($airport){
@@ -63,6 +63,7 @@ class AirportSeeder extends Seeder
             'name' => $name,
             'code' => $code,
             'city_id' => $cityId,
+            'timezone' => $timezone,
         ]);
     }
 }

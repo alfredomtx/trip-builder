@@ -60,6 +60,14 @@ class FlightResponse implements JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
      * @param string $arrivalDate
      * @param string $arrivalTime
      * @return FlightResponse
@@ -89,14 +97,6 @@ class FlightResponse implements JsonSerializable
     {
         $this->departureDatetime = $this->formatFlightDatetime($departureDate, $departureTime);
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrice()
-    {
-        return $this->price;
     }
 
     /**

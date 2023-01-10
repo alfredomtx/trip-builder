@@ -16,7 +16,7 @@ class Flight extends Model
         'price',
         'departure_date',
         'departure_time',
-        'arrival_departure',
+        'arrival_date',
         'arrival_time',
         'airline_id',
         'departure_airport_id',

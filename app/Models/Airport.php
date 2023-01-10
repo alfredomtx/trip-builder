@@ -12,8 +12,9 @@ class Airport extends Model
     protected $fillable = [
         'name',
         'code',
-        'latitute',
+        'latitude',
         'longitude',
+        'timezone',
         'city_id'
     ];
     public function city(){

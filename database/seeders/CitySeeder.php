@@ -26,7 +26,7 @@ class CitySeeder extends Seeder
 //        City::factory(5)->create();
     }
 
-    public static function cityHelper(string $name, string $code, string $timezone){
+    public static function cityHelper(string $name, string $code){
         $city = City::where('code', $code)->first();
         if ($city){
             return $city;
@@ -34,7 +34,6 @@ class CitySeeder extends Seeder
         return City::factory()->create([
             'name' => $name,
             'code' => $code,
-            'timezone' => $timezone,
         ]);
     }
 

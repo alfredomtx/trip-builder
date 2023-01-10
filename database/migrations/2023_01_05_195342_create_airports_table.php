@@ -19,6 +19,7 @@ class CreateAirportsTable extends Migration
             $table->string('code')->unique()->index();
             $table->bigInteger('latitude');
             $table->bigInteger('longitude');
+            $table->string('timezone');
             $table->timestamps();
 
             $table->foreignId('city_id');

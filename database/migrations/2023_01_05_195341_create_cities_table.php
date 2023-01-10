@@ -19,7 +19,6 @@ class CreateCitiesTable extends Migration
             $table->string('code');
             $table->string('region_code');
             $table->string('country_code');
-            $table->string('timezone');
             $table->timestamps();
         });
     }

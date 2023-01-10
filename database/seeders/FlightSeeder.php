@@ -51,12 +51,21 @@ class FlightSeeder extends Seeder
             "09:30", '146.42', 317, $departureDate);
         self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "10:10",
             "10:38", '86.23', 318, $departureDate);
+        self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "07:00",
+            "07:30", '86.23', 320, $departureDate);
+//        self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "05:00",
+//            "06:00", '146.42', 321, $departureDate);
         // return
         self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::cornwallAirport(), "11:30",
             "18:35", '75.41', 346, $returnDate);
         self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::montrealAirport(), "19:15",
             "19:46", '150.56', 347, $returnDate);
 
+        self::flightHelper(AirportSeeder::torontoAirport(), AirportSeeder::vancouverAirport(), "08:00",
+            "11:00", '400.00', 399, $departureDate);
+
+        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::torontoAirport(), "05:00",
+            "07:00", '273.23', 398, $departureDate);
 //        $today = new DateTime();
 //        $tomorrow = $today->modify('+1 day')->format('Y-m-d');
 //        self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::montrealAirport(), "01:00", "08:00", $tomorrow);
@@ -68,7 +77,7 @@ class FlightSeeder extends Seeder
 
     }
 
-    public static function flightHelper(Airport $airportFrom, Airport $airportTo, string $departureTimeAmPm, string $arrivalTimeAmPm, string $price, int $number, string $date = null)
+    public static function flightHelper(Airport $airportFrom, Airport $airportTo, string $departureTime, string $arrivalTime, string $price, int $number, string $date = null)
     {
         $airline = Airline::factory()->make([
             'name' => "Air Canada",
@@ -76,17 +85,14 @@ class FlightSeeder extends Seeder
         ]);
         $airline = Airline::firstOrCreate($airline->toArray());
 
-        $cityFromTimezone = $airportFrom->city()->first()->timezone;
-        $cityToTimezone = $airportTo->city()->first()->timezone;
-
         $date = ($date === null) ? date('Y-m-d') : $date;
         return Flight::factory()->create([
             'number' => $number,
             'price' => $price,
             'departure_date' => $date,
             'arrival_date' => $date,
-            'departure_time' => convert_time_to_utc_from_timezone(date("H:i:s", strtotime($departureTimeAmPm)), $cityFromTimezone),
-            'arrival_time' => convert_time_to_utc_from_timezone(date("H:i:s", strtotime($arrivalTimeAmPm)), $cityToTimezone),
+            'departure_time' => date("H:i:s", strtotime($departureTime)),
+            'arrival_time' => date("H:i:s", strtotime($arrivalTime)),
             'airline_id' => $airline->id,
             'departure_airport_id' => $airportFrom->id,
             'arrival_airport_id' => $airportTo->id,
