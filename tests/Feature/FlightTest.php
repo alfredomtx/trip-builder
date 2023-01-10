@@ -26,16 +26,16 @@ class FlightTest extends TestCase
     ];
 
     /**
-     * This test is a bit extensive because it tries to simulate a specific scenario to test the logic of the program.
-     * Briefly, the scenario is a trip search from Montreal -> Vancouver and the result is a multi stop trip with 2
+     * This test is a bit extensive because it tries to simulate a very specific scenario to test the
+     * logic of the search flight algorithm.
+     *
+     * Briefly, the scenario is a trip search from Montreal -> Vancouver and the result is a multi stop trip with 3
      * options.
      * Trip 1: Montreal -> Vancouver
      * Trip 2: Montreal -> Cornwall -> Vancouver
      * Trip 3: Montreal -> Toronto -> Vancouver
-     *
-     * @return void
      */
-    // TODO: refactor this test, it is hideous 😅
+    // TODO: refactor this test, it  completely hideous 😅
     public function test_one_way_trip_with_direct_and_one_stop_flight()
     {
         // Arrange
