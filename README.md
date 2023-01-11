@@ -38,6 +38,7 @@ There is also a full documentation of all endpoints available, where you can als
 There are many things that could and should be improved in the project, since I had a limited time to work on it, it is not near a state-of-the-art code.
 
 Here are a few things that could be done:
+- Frontend: would be really cool to make a front end for this to consume and interact with the API!
 - REST endpoints for all resources: currently only `Airline` has endpoints for CRUD operations, ideally there would be for `Airlines`, `Airports` and `Flights`.
 - Sad path tests: most tests are **happy tests**, to ensure the application is working, but sad tests are important, but it also takes a bit of time.
 - More sorting options: currently it is only sorting by price. Sorting by `flight duration` and `# of stops` would be interesting.
