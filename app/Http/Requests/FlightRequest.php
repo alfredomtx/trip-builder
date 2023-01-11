@@ -29,8 +29,8 @@ class FlightRequest extends FormRequest
     {
         return [
             // Airport code standards have maximum of 4 characters
-            'departure_airport' => ['required', 'exists:airports,code', 'uppercase'],
-            'arrival_airport' => ['required', 'exists:airports,code', 'uppercase'],
+            'departure_airport' => ['required', 'exists:airports,code'],
+            'arrival_airport' => ['required', 'exists:airports,code'],
             'departure_date' => ['required','date_format:Y-m-d'],
             'type' => ['required', new Enum(TripType::class)],
 

@@ -6,7 +6,9 @@ It's a REST API for searching Flights, a much simpler version of what a real fli
 
 I developed this project as a Coding Assessment to test my technical skills during a job application.
 
-## Live endpoint and Documentation
+**Usage** guide in down below, keep reading! 🙂 
+
+## 📃 Live endpoint and Documentation
 This API is live at [xxx](), and currently anyone can register a user and use it.
 
 There is also a full documentation of all endpoints available, where you can also easily try requests in the browser.
@@ -17,8 +19,9 @@ There is also a full documentation of all endpoints available, where you can als
 - Search flights from airport A to B (one way trip).
 - Search flights from airport A to B and B to A (round trip).
 - Search flights from airport A with multiple connections(stops) until B, and vice versa.
+- Paginated responses.
 
-### Search filters:
+### 🔎 Search filters:
 - `departure_airport`: The departure airport IATA **code**
 - `arrival_airport`: The arrival airport IATA **code**.
 - `departure_date`: Date of departure.
@@ -30,6 +33,14 @@ There is also a full documentation of all endpoints available, where you can als
 - `page`: Page to view.
 - `sort_by`: Sorting field, currently can be only **price**.
 - `sort_order`: Sorting order, can be either **asc** or **desc**.
+
+### 🆗 Improvement points
+There are many things that could and should be improved in the project, since I had a limited time to work on it, it is not near a state-of-the-art code.
+
+Here are a few things that could be done:
+- REST endpoints for all resources: currently only `Airline` has endpoints for CRUD operations, ideally there would be for `Airlines`, `Airports` and `Flights`.
+- Sad path tests: most tests are **happy tests**, to ensure the application is working, but sad tests are important, but it also takes a bit of time.
+- More sorting options: currently it is only sorting by price. Sorting by `flight duration` and `# of stops` would be interesting.
 
 # 🚀 Stack
 - PHP 8.1
@@ -60,4 +71,14 @@ php artisan db:seed
 Simply run the command below and it should be available at http://localhost/, ready for you to make requests.
 ```
 php artisan serve
+```
+
+### Tests
+There are `feature tests` and a few `unit tests` for most endpoints and important features. To run the tests, run the command below.
+
+**PHPUnit** is set to to use an **in-memory database** for the tests, so you can run it locally without any prior setting needed.
+
+
+```
+php artisan test
 ```
