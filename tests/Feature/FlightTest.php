@@ -27,7 +27,6 @@ class FlightTest extends TestCase
      * Trip 2: Montreal -> Cornwall -> Vancouver
      * Trip 3: Montreal -> Toronto -> Vancouver
      */
-    // TODO: refactor this test, it  completely hideous 😅
     public function test_one_way_trip_with_direct_and_one_stop_flight()
     {
         // Arrange
@@ -41,7 +40,7 @@ class FlightTest extends TestCase
            'flight' => FlightSeeder::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::vancouverAirport(), "07:35",
                "10:05", '273.23', 301, $departureDate),
         ];
-        // otther flights that we will check
+        // other flights that we will check
         $dummiesTrip = $this->addDummyTrips($departureDate);
 
         $assertData = [];
@@ -63,6 +62,7 @@ class FlightTest extends TestCase
 
         // Assert
         $data = $response->assertStatus(200)->json('data');
+//        dd($data);
         // pagination
         $this->assertEquals(1, $response->json('meta.current_page'));
         // number of trips

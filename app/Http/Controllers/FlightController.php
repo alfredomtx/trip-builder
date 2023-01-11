@@ -31,7 +31,7 @@ class FlightController extends Controller
      * @queryParam departure_date date required Date of departure. Format `YYYY-MM-DD`
      * @queryParam trip_type string required Can be a `one-way` or `round-trip`.
      * @queryParam return_date date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`
-     * @queryParam stops int Number of stops, can be 0(direct flights only), 1 or 2. Example: 0.
+     * @queryParam stops int Number of stops, can be 0(direct flights only) or 1. When 1, will filter flights with 1+ stops. Example: 0.
      *
      * @queryParam page_size int Size per page. Defaults to 10. Example: 20
      * @queryParam page int Page to view. Example: 1
@@ -42,7 +42,7 @@ class FlightController extends Controller
      */
     public function searchFlights(FlightRequest $request)
     {
-        return $this->service->getFlights($request->validated());
+        return $this->service->searchFlights($request->validated());
     }
 
 }

@@ -31,27 +31,27 @@ class FlightSeeder extends Seeder
         $departureDate = '2021-02-01';
         $returnDate = '2021-02-20';
         // departure flights
-        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::vancouverAirport(), "07:35",
-            "10:05", '373.23', 301, $departureDate);
+//        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::vancouverAirport(), "07:35",
+//            "10:05", '373.23', 301, $departureDate);
 
         self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::cornwallAirport(), "07:35",
             "09:30", '146.42', 317, $departureDate);
         self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "10:10",
             "10:38", '86.23', 318, $departureDate);
-//        self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "07:00",
-//            "07:30", '86.23', 320, $departureDate);
+        self::flightHelper(AirportSeeder::cornwallAirport(), AirportSeeder::vancouverAirport(), "07:00",
+            "07:30", '86.23', 320, $departureDate);
 
-//        self::flightHelper(AirportSeeder::torontoAirport(), AirportSeeder::vancouverAirport(), "08:00",
-//            "11:00", '400.00', 399, $departureDate);
-//        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::torontoAirport(), "05:00",
-//            "07:00", '273.23', 398, $departureDate);
+        self::flightHelper(AirportSeeder::torontoAirport(), AirportSeeder::vancouverAirport(), "08:00",
+            "11:00", '400.00', 399, $departureDate);
+        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::torontoAirport(), "05:00",
+            "07:00", '273.23', 398, $departureDate);
 
 //        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::vancouverAirport(), "09:35",
 //            "12:05", '333.23', 499, $departureDate);
 
         // return flights
-        self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::montrealAirport(), "11:30",
-            "19:11", '320.63', 302, $returnDate);
+//        self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::montrealAirport(), "11:30",
+//            "19:11", '320.63', 302, $returnDate);
 //        self::flightHelper(AirportSeeder::vancouverAirport(), AirportSeeder::montrealAirport(), "12:30",
 //            "20:11", '550.63', 304, $returnDate);
 
@@ -61,17 +61,27 @@ class FlightSeeder extends Seeder
             "19:46", '150.56', 347, $returnDate);
 
 
+        $airline = Airline::factory()->make([
+            'name' => "Emirates Airlines",
+            'code' => 'EK',
+        ]);
+//        self::flightHelper(AirportSeeder::montrealAirport(), AirportSeeder::vancouverAirport(), "07:35",
+//            "10:05", '373.23', 366, $departureDate, $airline);
+
 
 //        Flight::factory(5)->create();
 
     }
 
-    public static function flightHelper(Airport $airportFrom, Airport $airportTo, string $departureTime, string $arrivalTime, string $price, int $number, string $date = null)
+    public static function flightHelper(Airport $airportFrom, Airport $airportTo, string $departureTime, string $arrivalTime, string $price, int $number
+        , string $date = null, Airline $airline = null)
     {
-        $airline = Airline::factory()->make([
-            'name' => "Air Canada",
-            'code' => 'AC',
-        ]);
+        if (!$airline){
+            $airline = Airline::factory()->make([
+                'name' => "Air Canada",
+                'code' => 'AC',
+            ]);
+            }
         $airline = Airline::firstOrCreate($airline->toArray());
 
         $date = ($date === null) ? date('Y-m-d') : $date;
