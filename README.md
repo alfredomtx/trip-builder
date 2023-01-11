@@ -9,11 +9,9 @@ I developed this project as a Coding Assessment to test my technical skills duri
 **Usage** guide can be found down below, keep reading! 🙂 
 
 ## 📃 Live endpoint and Documentation
-This API is live at [xxx](), and currently anyone can register a user and use it.
+This API is live at [xxx]()(not ready yet), and currently anyone can register a user and use it.
 
 There is also a full documentation of all endpoints available, where you can also easily try requests in the browser.
-
-### 👉 [Link to documentation]()
 
 ## What the API can do:
 - Search flights from airport A to B (one way trip).
@@ -69,17 +67,22 @@ php artisan db:seed
 ```
 
 ### Running the App
-Simply run the command below and it should be available at http://localhost/, ready for you to make requests.
+Simply run the command below, and it should be available at http://localhost/, ready for you to make requests.
 ```
 php artisan serve
 ```
 
+### Documentation 
+The documentation was generated using [Scribe](https://scribe.knuckles.wtf/), with the app running on localhost, you can access it in http://localhost/docs.
+
 ### Tests
 There are `feature tests` and a few `unit tests` for most endpoints and important features. To run the tests, run the command below.
 
-**PHPUnit** is set to to use an **in-memory database** for the tests, so you can run the tests locally without any prior setting needed.
+**PHPUnit** is set to use an **in-memory database** for the tests, so you can run the tests locally without any prior setting needed.
 
 
 ```
 php artisan test
 ```
+
+
