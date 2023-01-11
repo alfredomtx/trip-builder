@@ -1,14 +1,17 @@
 <?php
 namespace App\Services;
 
+use App\Enums\SortBy;
+use App\Enums\SortOrder;
 use App\Enums\StopsNumber;
 use App\Enums\TripType;
-use App\Exceptions\GeneralJsonException;
 use App\Http\Resources\TripResource;
 use App\Http\Responses\FlightResponse;
 use App\Http\Responses\TripResponse;
 use App\Models\Flight;
 use App\Models\FlightSearch;
+use App\Models\Trip;
+use App\Models\TripsBuilder;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -18,44 +21,59 @@ use Illuminate\Support\Facades\DB;
 class FlightService
 {
     /**
+     * Return the flights in a Paginated response according to the search criteria and filters.
      * @param array $filters
      * @return ResourceCollection
-     * @throws GeneralJsonException
      */
     public function searchFlights(array $filters)
     {
         $filters = $this->setDefaultFilterValues($filters);
 
-        $trips = match (TripType::from($filters['type'])) {
+        $tripsResponse = match (TripType::from($filters['type'])) {
             TripType::OneWay => $this->oneWayTrip($filters),
             TripType::RoundTrip => $this->roundTrip($filters),
-            default => throw new GeneralJsonException('Invalid `trip_type`.', 422),
         };
 
-        $paginatedTrips = $this->paginate($trips, $filters['page_size'], $filters['page']);
+        $tripsResponse = $this->sortTripsResponse($tripsResponse, $filters);
+
+        $paginatedTrips = $this->paginate($tripsResponse, $filters['page_size'], $filters['page']);
         return TripResource::collection($paginatedTrips);
     }
 
+    private function sortTripsResponse(array $tripsResponse, array $filters)
+    {
+        switch (SortBy::tryFrom($filters['sort_by'])){
+            case SortBy::Price:
+                $keys = array_column($tripsResponse, SortBy::Price->value);
+                match(SortOrder::from($filters['sort_order'])){
+                    SortOrder::Asc => array_multisort($keys, SORT_ASC, $tripsResponse),
+                    SortOrder::Desc => array_multisort($keys, SORT_DESC, $tripsResponse),
+                };
+                break;
+        }
+        return $tripsResponse;
+    }
+
     /**
+     * Search for flights using the `one-way` criteria (i.e. trip without a return trip).
+     *
      * @param array $filters
-     * @return Collection
+     * @return TripResponse[]
      */
     private function oneWayTrip(array $filters)
     {
-        $origin = $filters['departure_airport'];
-        $destination = $filters['arrival_airport'];
-        $departureDate = $filters['departure_date'];
-        $airline = $filters['airline'];
         $stops = StopsNumber::from($filters['stops'] ?? '');
 
         $flightSearch = new FlightSearch();
-        $flightSearch->setDepartureDate($departureDate)
-            ->setDestination($destination)
-            ->setOrigin($origin)
-            ->setAirlineCode($airline);
+        $flightSearch->setDepartureDate($filters['departure_date'])
+            ->setDestination($filters['arrival_airport'])
+            ->setOrigin($filters['departure_airport'])
+            ->setAirlineCode($filters['airline']);
 
         if ($stops === StopsNumber::NoStops){
-            return $this->getTripsWithDirectFlightsOnly($flightSearch);
+            $directFlights = $this->selectDirectFlights($flightSearch);
+            $tripsResponse = $this->getTripsResponseFromDirectFlights($directFlights);
+            return $tripsResponse;
         }
 
         $includeDirectFlights = match($stops){
@@ -68,6 +86,12 @@ class FlightService
         return $tripsResponse;
     }
 
+    /**
+     * Search for flights using the `round-trip` criteria (i.e. trip with other return trips).
+     *
+     * @param array $filters
+     * @return Collection[] TripResponse
+     */
     private function roundTrip(array $filters)
     {
         $origin = $filters['departure_airport'];
@@ -83,6 +107,7 @@ class FlightService
             ->setOrigin($origin)
             ->setAirlineCode($airline);
 
+        // get direct flights from origin to destination at departure date
         $roundTrip = [];
         $roundTrip['departure'] = [];
         $roundTrip['departure']['directFlights'] = $this->selectDirectFlights($flightSearch);
@@ -92,19 +117,22 @@ class FlightService
             ->setDestination($origin)
             ->setOrigin($destination);
 
+        // get direct flights from destination to origin at return date
         $roundTrip['return'] = [];
         $roundTrip['return']['directFlights'] = $this->selectDirectFlights($flightSearch);
-//        dd($roundTrip);
 
+        // convert direct flights to Trips
         $roundTrip['directFlightTrips'] = $this->getRoundTripsWithDirectFlightsOnly($roundTrip['departure']['directFlights'],  $roundTrip['return']['directFlights']);
         if ($stops === StopsNumber::NoStops){
-            return $roundTrip['directFlightTrips'];
+            $tripsResponse = $this->getTripsResponseFromTrips($roundTrip['directFlightTrips']);
+            return $tripsResponse;
         }
 
         $flightSearch->setDepartureDate($departureDate)
             ->setDestination($destination)
             ->setOrigin($origin);
 
+        // get all trips from origin to destination at departure date, including stop flights
         $roundTrip['departure']['trips'] = $this->getOneWayTrips($flightSearch, false);
 
         // invert destination and origin
@@ -112,52 +140,66 @@ class FlightService
                 ->setDestination($origin)
                 ->setOrigin($destination);
 
+        // get all trips from destination to origin at return date, including stop flights
         $roundTrip['return']['trips'] = $this->getOneWayTrips($flightSearch,false);
 
-        $tripsResponse = $this->getRoundTripsWithStopFlights($roundTrip['departure']['trips'],  $roundTrip['return']['trips']);
+        // convert flights to Trips
+        $trips = $this->getRoundTripsWithStopFlights($roundTrip['departure']['trips'], $roundTrip['return']['trips']);
+        $tripsResponse = $this->getTripsResponseFromTrips($trips);
 
+        // if `stops` is not 1, add the direct flight trips to the response
         if ($stops != StopsNumber::OneOrMore){
-            $tripsResponse = array_merge($roundTrip['directFlightTrips'], $tripsResponse);
+            $tripsResponse = array_merge($this->getTripsResponseFromTrips($roundTrip['directFlightTrips']), $tripsResponse);
         }
         return $tripsResponse;
     }
 
     /**
+     * Get all Trips according to FlightSearch object criteria, including stop flights.
+     *
      * @param FlightSearch $flightSearch
      * @param bool $includeDirectFlights
-     * @return array $trips
+     * @return Trip[] array of `Trip` object
      */
     private function getOneWayTrips(FlightSearch $flightSearch, bool $includeDirectFlights)
     {
+        // instantiate a TripsBuilder object to help organizing data and build an array of `Trip` objects at the end.
+        $tripsBuilder = new TripsBuilder();
+
         $directFlights = $this->getDirectFlights($flightSearch);
+        $tripsBuilder->directFlights = $this->getTripsByFlights($directFlights);
 
         // STEP 1
-        $flightsToDestination = $this->selectStopFlightsGoingToDestination($flightSearch, $directFlights);
-//        dd($flightsToDestination);
-        if (empty($flightsToDestination)){
+        $toDestinationFlights = $this->selectStopFlightsGoingToDestination($flightSearch, $directFlights);
+        $tripsBuilder->toDestination = $this->getTripsByFlights($toDestinationFlights);
+        if (empty($tripsBuilder->toDestination)){
             // return trips with direct flights
             if ($includeDirectFlights){
-                $trips = $this->setFlightsArrayByAirportCode($directFlights);
-                return $trips;
+                return $tripsBuilder->directFlights;
             }
             return [];
         }
 
         // STEP 2
-        $flightsToStopDestinations = $this->getFlightsToStopDestinations($flightSearch, $flightsToDestination);
-//        dd($flightsToStopDestinations);
+        $tripsBuilder->toStopDestinations = $this->getFlightsFromOriginToStopDestinations($flightSearch, $tripsBuilder);
 
         // STEP 3 & STEP 4
-        $trips = $this->buildTripsFromOriginToStopDestinations($flightsToStopDestinations, $flightsToDestination);
-//        dd($trips);
+        $trips = $this->buildTripsFromOriginToStopDestinations($tripsBuilder);
+
         // STEP 5 - merge
         if ($includeDirectFlights){
-            $trips = $this->mergeDirectFlightsToTrips($flightSearch->origin, $directFlights, $trips);
+            $trips = array_merge($tripsBuilder->directFlights, $trips);
         }
-        return $trips;
 
+        return $trips;
     }
 
+    /**
+     * Get the direct flights from the origin to destination.
+     *
+     * @param FlightSearch $flightSearch
+     * @return array array of `Flight` objects as array.
+     */
     private function getDirectFlights(FlightSearch $flightSearch)
     {
         $directFlights = $this->selectDirectFlights($flightSearch);
@@ -169,8 +211,10 @@ class FlightService
     }
 
     /**
+     * Loop throgh every flight and filter out flights where the `airline code` does not match.
+     *
      * @param string $airlineCode
-     * @param array $flights
+     * @param array $flights array of `Flight` objects as array.
      * @return array
      */
     private function filterByAirline(string $airlineCode, array $flights)
@@ -188,55 +232,59 @@ class FlightService
     }
 
     /**
+     * From the $departureTrips and $returnTrips arrays, it will return a new array of `Trip` objects
+     * In the structure that is expected for a `round-trip` flight (i.e. flights from departure and return date in the
+     * same trip).
+     *
      * @param array $departureTrips
      * @param array $returnTrips
-     * @return Collection
+     * @return Trip[] array of `Trip` objects.
      */
     private function getRoundTripsWithStopFlights(array $departureTrips, array $returnTrips)
     {
         $trips = [];
-        foreach ($departureTrips as $departureAirport => $departureTrip){
-            $trips[$departureAirport] = [];
-            foreach ($returnTrips as $returnAirport => $returnTrip){
-                $trips[$departureAirport] = array_merge($departureTrip,  $returnTrip);
+        foreach ($departureTrips as $departureTrip){
+            $trip = new Trip();
+            foreach ($returnTrips as $returnTrip){
+                $trip->setFlights($departureTrip->getFlights());
+                $trip->addFlights($returnTrip->getFlights());
             }
+            $trips[] = $trip;
         }
-        $tripsResponse = $this->getTripsResponseFromTrips($trips);
-        return $tripsResponse;
+        return $trips;
     }
 
-
-        /**
+    /**
+     * From the $departureTrips and $returnTrips arrays, it will return a new array of `Trip` objects
+     * In the structure that is expected for a `round-trip` flight (i.e. flights from departure and return date in the
+     * same trip).
+     *
      * @param array $departureDirectFlights
      * @param array $returnDirectFlights
-     * @return Collection[]
+     * @return Trip[] array of `Trip` objects.
      */
     private function getRoundTripsWithDirectFlightsOnly(array $departureDirectFlights, array $returnDirectFlights)
     {
         $trips = [];
         foreach ($departureDirectFlights as $departureFlight){
             foreach ($returnDirectFlights as $returnFlight){
-                $flights = [];
-                $flights[] =  Flight::make($departureFlight);
-                $flights[] =  Flight::make($returnFlight);
-                $trips[] = $this->getTripResponseFromFlights($flights);
+                $trip = new Trip();
+                $trip->addFlight($departureFlight);
+                $trip->addFlight($returnFlight);
+                $trips[] = $trip;
             }
         }
         return $trips;
     }
 
     /**
-     * @param FlightSearch $flightSearch
-     * @return Collection
+     * When searching for `one-way` trips and with `stops` = 0 (direct flights only),
+     * We build the TripResponse directly from Flights instead of from a `Trip` object that contains the flights.
+     * This is because in this scenario, each trip will always have only 1 flight.
+     *
+     * @param array $directFlights
+     * @return TripResponse[]
      */
-    private function getTripsWithDirectFlightsOnly(FlightSearch $flightSearch)
-    {
-        $directFlights = $this->selectDirectFlights($flightSearch);
-
-        $tripsResponse = $this->getTripsResponseFromDirectFlights($directFlights);
-        return $tripsResponse;
-    }
-
     private function getTripsResponseFromDirectFlights(array $directFlights)
     {
         // convert each flight to a TripResponse and return as array
@@ -248,19 +296,18 @@ class FlightService
         return $tripsResponse;
     }
 
-
     /**
-     * Create an array of `TripResponse` from the trips of the algorithm.
+     * Create an array of `TripResponse` from an array of `Trip` objects.
      *
-     * @param array $trips
-     * @return Collection[]
+     * @param Trip[] $trips
+     * @return TripResponse[]
      */
     private function getTripsResponseFromTrips(array $trips)
     {
         $tripsResponse = [];
-        foreach ($trips as $airport => $flights){
+        foreach ($trips as $trip){
             $flightsArray = [];
-            foreach ($flights as $flight){
+            foreach ($trip->getFlights() as $flight){
                 $flightsArray[] = Flight::make((array) $flight);
             }
             $tripsResponse[] = $this->getTripResponseFromFlights($flightsArray);
@@ -268,112 +315,89 @@ class FlightService
         return $tripsResponse;
     }
 
-    private function createTripFromFlights(string $airportCode, array $flights)
-    {
-        $trip = [];
-        $trip[$airportCode] = [];
-        foreach ($flights as $flight){
-            $trip[$airportCode][] = $flight;
-        }
-
-        return $trip;
-    }
-
-    /**
-     * Merge $directFlights to the $trips array
-     *
-     * @param string $origin
-     * @param array $directFlights
-     * @param array $trips
-     * @return array
-     */
-    private function mergeDirectFlightsToTrips(string $origin, array $directFlights, array $trips)
-    {
-        if (empty($directFlights)){
-            return $trips;
-        }
-        $directTrip = [];
-        $directTrip[$origin] = $directFlights;
-        $trips = $directTrip + $trips;
-        return $trips;
-    }
-
     /**
      * Build the `Trips` from the flights to stop destinations, and validate the flight times
-     * to filter out invalid flights (i.e. flights where the arrival time from origin to stop destination are earlier
+     * to filter out invalid flights.
+     * Flights where the arrival time from origin to stop destination are earlier
      * than the departure time of the stop destination flight (a bit confusing, I know).
      *
-     * @param array $flightsToStopDestinations
-     * @param array $flightsToDestination
-     * @return array
+     * @param TripsBuilder $tripsBuilder
+     * @return Trip[] array of `Trip` objects.
      */
-    private function buildTripsFromOriginToStopDestinations(array $flightsToStopDestinations, array $flightsToDestination)
+    private function buildTripsFromOriginToStopDestinations(TripsBuilder $tripsBuilder)
     {
-//        dump($flightsToStopDestinations);
-//        dump($flightsToDestination);
-//        dd();
+        // since the $tripsBuilder->toDestination has an array of `Trip` objects,
+        // we need to create this array by airport to loop through it below
+        $flightsToDestinationByAirport = [];
+        foreach ($tripsBuilder->toDestination as $trip){
+            $flightsToDestinationByAirport[$trip->getAirportCode()] = $trip->getFlights();
+        }
+
         $trips = [];
-        foreach ($flightsToStopDestinations as $airport => $flights)
+        $trip = null;
+        foreach ($tripsBuilder->toStopDestinations as $airport => $flights)
         {
-            if (!isset($trips[$airport])){
-                $trips[$airport] = [];
+            // first iteration
+            if ($trip === null){
+                $trip = new Trip();
+                $trip->setAirportCode($airport);
+            } else if ($trip->getAirportCode() != $airport){
+                $trip = new Trip();
+                $trip->setAirportCode($airport);
             }
 
             foreach ($flights as $flightToStopDestination){
                 // compare flights from origin -> stop destination
-                foreach ($flightsToDestination[$airport] as $flightFromStopToDestination){
+                foreach ($flightsToDestinationByAirport[$airport] as $flightFromStopToDestination){
                     // STEP 4
                     if ($this->validateStopFlightTimes($flightToStopDestination, $flightFromStopToDestination)) {
-                        $trips[$airport][] = $flightToStopDestination;
-                        $trips[$airport][] = $flightFromStopToDestination;
+                        $trip->addFlight($flightToStopDestination);
+                        $trip->addFlight($flightFromStopToDestination);
+                        $trips[] = $trip;
                     }
                 }
             }
         }
-        return $trips;
 
-        // loop through the trips and check if there is any Airport without flights
-        $airportsWithoutFlight = [];
-        foreach ($trips as $airport => $flights){
-            if (count($flights) == 0){
-                $airportsWithoutFlight[] = $airport;
+        // loop through the trips and check if there is any `Trip` without flights
+        $newTrips = [];
+        foreach ($trips as $trip){
+            if (count($trip->getFlights()) == 0){
+                continue;
             }
+            $newTrips[] = $trip;
         }
-        // remove the airports without flight
-        foreach ($airportsWithoutFlight as $airport){
-            unset($trips[$airport]);
-        }
-        return $trips;
+        return $newTrips;
     }
 
     /**
-     * `$flightsToDestination` are flights to the destination (e.g. Vancouver) that are NOT from the
-     * origin (e.g. Montreal)
+     * `$toDestination` are flights to the destination (e.g. Vancouver) that are NOT from the origin (e.g. Montreal).
      * With these flights, this function will search all flights from the origin (e.g. Montreal) to these
-     * stop destinations (e.g. Cornwall, Toronto)
-     *
+     * stop destinations (e.g. Cornwall, Toronto).
      *
      * @param FlightSearch $flightSearch
-     * @param array $flightsToDestination
-     * @return array
+     * @param TripsBuilder $tripsBuilder
+     * @return array array of `Flight` object as array.
      */
-    private function getFlightsToStopDestinations(FlightSearch $flightSearch, array $flightsToDestination)
+    private function getFlightsFromOriginToStopDestinations(FlightSearch $flightSearch, TripsBuilder $tripsBuilder)
     {
-        $flightsToStopDestinations = [];
-        foreach ($flightsToDestination as $airport => $flights){
-            if (!isset($flightsToStopDestinations[$airport])){
-                $flightsToStopDestinations[$airport] = [];
+        $toStopDestinations = [];
+        foreach ($tripsBuilder->toDestination as $trip){
+            if (!isset($toStopDestinations[$trip->getAirportCode()])){
+                $toStopDestinations[$trip->getAirportCode()] = [];
             }
 
-            $flightSearch->setDestination($airport);
-            $flightsToStopDestinations[$airport] = $this->selectDirectFlights($flightSearch);
+            $flightSearch->setDestination($trip->getAirportCode());
+            $toStopDestinations[$trip->getAirportCode()] = $this->selectDirectFlights($flightSearch);
         }
-        return $flightsToStopDestinations;
+        return $toStopDestinations;
     }
 
     /**
+     * Select in the database direct flights from origin to destination.
+     *
      * @param FlightSearch $flightSearch
-     * @return array
+     * @return array array of `Flight` objects as array.
      */
     private function selectDirectFlights(FlightSearch $flightSearch)
     {
@@ -423,6 +447,8 @@ class FlightService
         $filters['page'] = $filters['page'] ?? 1;
         $filters['stops'] = $filters['stops'] ?? '';
         $filters['airline'] = $filters['airline'] ?? '';
+        $filters['sort_by'] = $filters['sort_by'] ?? '';
+        $filters['sort_order'] = $filters['sort_order'] ?? '';
 
         return $filters;
     }
@@ -440,43 +466,53 @@ class FlightService
         if ($originFlight['arrival_time'] < $destinationFlight['departure_time']){
             return true;
         }
-//        dd($originFlight);
         return false;
     }
 
     /**
-     * Format the array by airport code.
-     * Example:
-     *  [
-     *      "YUL": [
-     *          ...flight1,
-     *          ...flight2,
-     *      ],
-     *      "YVR": [
-     *          ...flight1,
-     *          ...
-     *      ],
-     * ]
+     * Create an array of `Trip` objects from the flights. The array is by `departure` airport code, so each entry is a `Trip`
+     * with a different airport code.
      *
      * @param array $flights
-     * @return array
+     * @return Trip[] array of `Trip` object
      */
-    private function setFlightsArrayByAirportCode(array $flights)
+    private function getTripsByFlights(array $flights)
     {
-        $array = [];
+//        dd($flights);
+        $trip = null;
+        $trips = [];
         foreach($flights as $flight){
-            if (!isset($array[$flight['code']])){
-                $array[$flight['code']] = [];
+            // first iteration
+            if ($trip === null){
+                $trip = new Trip();
+                $trip->setAirportCode($flight['code']);
+                $trip->addFlight($flight);
+
+                // first airport, add a new trip
+                $trips[] = $trip;
+            } else if ($trip->getAirportCode() != $flight['code']){
+                // create a new Trip instance for every airport
+                $trip = new Trip();
+                $trip->setAirportCode($flight['code']);
+                $trip->addFlight($flight);
+
+                // new airport, add a new trip
+                $trips[] = $trip;
+
+            } else {
+                $trip->addFlight($flight);
             }
-            $array[$flight['code']][] = (array) $flight;
         }
-        return $array;
+        return $trips;
     }
 
     /**
+     * Select flights going to the on DESTINATION (e.g. Vancouver) that are NOT direct flights
+     * from the origin (e.g. Montreal).
+     *
      * @param FlightSearch $flightSearch
      * @param array $directFlights
-     * @return array
+     * @return array array of `Flight` objects as array.
      */
     private function selectStopFlightsGoingToDestination(FlightSearch $flightSearch, array $directFlights)
     {
@@ -510,7 +546,6 @@ class FlightService
                 -- filter out the direct flights
                 {$directFlightsWhereCondition}
                 {$airlineCondition}
-
         ";
 
         $queryParams = [
@@ -521,42 +556,37 @@ class FlightService
             $queryParams['airline_code'] = $flightSearch->airlineCode;
         }
 
-        $flightsToDestination = DB::select(DB::raw($sql), $queryParams);
+        $toDestination = DB::select(DB::raw($sql), $queryParams);
 
         // convert all `StdClass` results to array
-        $flights = array_map(fn ($flight) => (array) $flight, $flightsToDestination);
+        $flights = array_map(fn ($flight) => (array) $flight, $toDestination);
         $flights = $this->filterByAirline($flightSearch->airlineCode, $flights);
-        return $this->setFlightsArrayByAirportCode($flights);
-    }
-
-    private function paginateQuery($query, int $pageSize, int $page)
-    {
-        return $query->paginate($pageSize, ['*'], 'page', $page);
+        return $flights;
     }
 
     /**
-     * Get a collection of `TripResponse`
+     * Get a collection of `TripResponse` from an array of `Flight` objects as array.
      *
      * @param Flight[] $flights
-     * @return Collection
+     * @return array TripResponse
      */
     private function getTripResponseFromFlights(array $flights)
     {
-        // convert the flights returned from database to a Collection of `FlightResponse`
-
+        // convert the flights returned from database to a Collection of `FlightResponse` as array
         $flightsResponseCollection = collect($flights)->map(function ($flight) {
-            return FlightResponse::fromFlight($flight);
+            return FlightResponse::fromFlight($flight)->toArray();
         });
+
 
         $totalPrice = 0;
         foreach ($flightsResponseCollection as $flight){
-            $totalPrice += $flight->getPrice();
+            $totalPrice += $flight['price'];
         }
         $tripResponse = new TripResponse();
         $tripResponse->setPrice($totalPrice)
             ->setFlights($flightsResponseCollection->toArray());
 
-        return collect($tripResponse);
+        return $tripResponse->toArray();
     }
 
     /**
@@ -577,8 +607,5 @@ class FlightService
         $paginator->withPath(Paginator::resolveCurrentPath());
         return $paginator;
     }
-
-
-
 
 }

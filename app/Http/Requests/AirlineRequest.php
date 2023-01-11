@@ -29,8 +29,22 @@ class AirlineRequest extends FormRequest
         $isUpdateOperation = ($this->id ?? false);
         $requiredFields = ($isUpdateOperation) ? 'nullable' : 'required';
         return [
-            'name' => [$requiredFields, 'min:2'],
-            'code' => [$requiredFields, 'min:2', Rule::unique(Airline::class)->ignore($this->id ?? null)],
+            'name' => [$requiredFields],
+            'code' => [$requiredFields, Rule::unique(Airline::class)->ignore($this->id ?? null)],
+        ];
+    }
+
+    public function queryParameters()
+    {
+        return [
+            'name' => [
+                'description' => 'Name of the airline to filter the flights.',
+                'example' => 'Air Canada'
+            ],
+            'code' => [
+                'description' => 'IATA Code of the airline to filter the flights.',
+                'example' => 'AC'
+            ],
         ];
     }
 }

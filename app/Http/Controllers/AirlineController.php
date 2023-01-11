@@ -19,6 +19,11 @@ use PHP_CodeSniffer\Reports\Json;
  * @group Airline
  *
  * APIs to manage the airline resource.
+ *
+ * This is the only resource available currently as a REST endpoint.
+ * It means there are endpoints for every operation: create, delete, update, search.
+ *
+ * Ideally, there should be also REST endpoints for other resources, such as Flights, Cities and Airports.
  */
 class AirlineController extends Controller
 {
@@ -53,6 +58,7 @@ class AirlineController extends Controller
      * Create new resource
      *
      * Store a newly created resource in storage.
+     *
      *
      * @param AirlineRequest $request
      * @param AirlineRepository $repository

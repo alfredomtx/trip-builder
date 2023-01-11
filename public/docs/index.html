@@ -100,7 +100,7 @@
                                 <a href="#auth-POSTapi-logout">Logout</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="auth-POSTapi-register">
-                                <a href="#auth-POSTapi-register">Register user</a>
+                                <a href="#auth-POSTapi-register">Register</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -110,7 +110,7 @@
                 </li>
                                     <ul id="tocify-subheader-flight" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="flight-GETapi-flights-search">
-                                <a href="#flight-GETapi-flights-search">Search for flights</a>
+                                <a href="#flight-GETapi-flights-search">Search flights</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -123,7 +123,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: January 8, 2023</li>
+        <li>Last updated: January 11, 2023</li>
     </ul>
 </div>
 
@@ -134,7 +134,7 @@
 <aside>
     <strong>Base URL</strong>: <code>http://localhost</code>
 </aside>
-<p>This documentation aims to provide all the information you need to work with our API.</p>
+<p>This documentation aims to provide all the information you need to work use the API.</p>
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
 You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
 
@@ -146,6 +146,9 @@ You can switch the language used with the tabs at the top right (or from the nav
         <h1 id="airline">Airline</h1>
 
     <p>APIs to manage the airline resource.</p>
+<p>This is the only resource available currently as a REST endpoint.
+It means there are endpoints for every operation: create, delete, update, search.</p>
+<p>Ideally, there should be also REST endpoints for other resources, such as Flights, Cities and Airports.</p>
 
                                 <h2 id="airline-GETapi-airlines">Display a listing of the resources</h2>
 
@@ -433,15 +436,10 @@ access-control-allow-origin: *
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/airlines" \
+    "http://localhost/api/airlines?name=Air+Canada&amp;code=AC" \
     --header "Authorization: Bearer {ACCESS_TOKEN}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"name\": \"oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw\",
-    \"code\": \"ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay\"
-}"
-</code></pre></div>
+    --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
@@ -449,21 +447,22 @@ access-control-allow-origin: *
     "http://localhost/api/airlines"
 );
 
+const params = {
+    "name": "Air Canada",
+    "code": "AC",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
 const headers = {
     "Authorization": "Bearer {ACCESS_TOKEN}",
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
 
-let body = {
-    "name": "oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw",
-    "code": "ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay"
-};
-
 fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
@@ -542,30 +541,30 @@ fetch(url, {
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="POSTapi-airlines"
-               value="oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw"
-               data-component="body">
+               value="Air Canada"
+               data-component="query">
     <br>
-<p>Must be at least 2 characters. Example: <code>oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
+<p>Name of the airline to filter the flights. Example: <code>Air Canada</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                name="code"                data-endpoint="POSTapi-airlines"
-               value="ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay"
-               data-component="body">
+               value="AC"
+               data-component="query">
     <br>
-<p>Must be at least 2 characters. Example: <code>ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay</code></p>
-        </div>
-        </form>
+<p>IATA Code of the airline to filter the flights. Example: <code>AC</code></p>
+            </div>
+                </form>
 
                     <h2 id="airline-PUTapi-airlines--id-">Update the specified resource in storage.</h2>
 
@@ -581,7 +580,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/airlines/1" \
+    "http://localhost/api/airlines/1?name=Air+Canada&amp;code=AC" \
     --header "Authorization: Bearer {ACCESS_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -596,6 +595,13 @@ fetch(url, {
     <pre><code class="language-javascript">const url = new URL(
     "http://localhost/api/airlines/1"
 );
+
+const params = {
+    "name": "Air Canada",
+    "code": "AC",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {ACCESS_TOKEN}",
@@ -702,7 +708,30 @@ fetch(url, {
     <br>
 <p>The ID of the airline. Example: <code>1</code></p>
             </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+                        <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="name"                data-endpoint="PUTapi-airlines--id-"
+               value="Air Canada"
+               data-component="query">
+    <br>
+<p>Name of the airline to filter the flights. Example: <code>Air Canada</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="code"                data-endpoint="PUTapi-airlines--id-"
+               value="AC"
+               data-component="query">
+    <br>
+<p>IATA Code of the airline to filter the flights. Example: <code>AC</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
@@ -861,7 +890,11 @@ fetch(url, {
 
                 <h1 id="auth">Auth</h1>
 
-    
+    <p>Bearer Token authentication.</p>
+<p>The authentication uses a bearer token to validate the requests.</p>
+<p>That means, you can send a request to <code>/register</code> endpoint to create a user.
+After that, login with the user sending a request to <code>/login</code> to receive the Bearer Token.</p>
+<p>The Bearer token must be sent in the <code>Authorization</code> header in subsequent requests to endpoints that require authentication.</p>
 
                                 <h2 id="auth-POSTapi-login">Authenticate</h2>
 
@@ -880,8 +913,8 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"xkuphal@example.org\",
-    \"password\": \"Hzs4[BBx3O+|~\"
+    \"email\": \"kwest@example.org\",
+    \"password\": \"thoEW:d(;p@?}a\"
 }"
 </code></pre></div>
 
@@ -897,8 +930,8 @@ const headers = {
 };
 
 let body = {
-    "email": "xkuphal@example.org",
-    "password": "Hzs4[BBx3O+|~"
+    "email": "kwest@example.org",
+    "password": "thoEW:d(;p@?}a"
 };
 
 fetch(url, {
@@ -979,10 +1012,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-login"
-               value="xkuphal@example.org"
+               value="kwest@example.org"
                data-component="body">
     <br>
-<p>Must be a valid email address. Example: <code>xkuphal@example.org</code></p>
+<p>Must be a valid email address. Example: <code>kwest@example.org</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -990,10 +1023,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-login"
-               value="Hzs4[BBx3O+|~"
+               value="thoEW:d(;p@?}a"
                data-component="body">
     <br>
-<p>Example: <code>Hzs4[BBx3O+|~</code></p>
+<p>Example: <code>thoEW:d(;p@?}a</code></p>
         </div>
         </form>
 
@@ -1003,7 +1036,7 @@ fetch(url, {
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Invalidate the user's current access token.</p>
 
 <span id="example-requests-POSTapi-logout">
 <blockquote>Example request:</blockquote>
@@ -1120,12 +1153,12 @@ fetch(url, {
             </div>
                         </form>
 
-                    <h2 id="auth-POSTapi-register">Register user</h2>
+                    <h2 id="auth-POSTapi-register">Register</h2>
 
 <p>
 </p>
 
-<p>Register your user for authentication.</p>
+<p>Register a user for authentication.</p>
 
 <span id="example-requests-POSTapi-register">
 <blockquote>Example request:</blockquote>
@@ -1137,9 +1170,9 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"name\": \"est\",
-    \"email\": \"henri17@example.com\",
-    \"password\": \"I*&lt;_Aq!n2L?\\/(-PFTj\"
+    \"name\": \"omnis\",
+    \"email\": \"wkertzmann@example.net\",
+    \"password\": \"p2;SekF\"
 }"
 </code></pre></div>
 
@@ -1155,9 +1188,9 @@ const headers = {
 };
 
 let body = {
-    "name": "est",
-    "email": "henri17@example.com",
-    "password": "I*&lt;_Aq!n2L?\/(-PFTj"
+    "name": "omnis",
+    "email": "wkertzmann@example.net",
+    "password": "p2;SekF"
 };
 
 fetch(url, {
@@ -1238,10 +1271,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="POSTapi-register"
-               value="est"
+               value="omnis"
                data-component="body">
     <br>
-<p>Example: <code>est</code></p>
+<p>Example: <code>omnis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -1249,10 +1282,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-register"
-               value="henri17@example.com"
+               value="wkertzmann@example.net"
                data-component="body">
     <br>
-<p>Must be a valid email address. Example: <code>henri17@example.com</code></p>
+<p>Must be a valid email address. Example: <code>wkertzmann@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -1260,24 +1293,24 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-register"
-               value="I*<_Aq!n2L?/(-PFTj"
+               value="p2;SekF"
                data-component="body">
     <br>
-<p>Example: <code>I*&lt;_Aq!n2L?/(-PFTj</code></p>
+<p>Example: <code>p2;SekF</code></p>
         </div>
         </form>
 
                 <h1 id="flight">Flight</h1>
 
-    <p>APIs to search for flights.</p>
+    <p>API to search for flights.</p>
 
-                                <h2 id="flight-GETapi-flights-search">Search for flights</h2>
+                                <h2 id="flight-GETapi-flights-search">Search flights</h2>
 
 <p>
-<small class="badge badge-darkred">requires authentication</small>
 </p>
 
 <p>Search for flights according to search criteria and return paginated result.</p>
+<p>Briefly, flights can be searched by departure airport, arrival airport, departure date and return date(if is a round trip).</p>
 
 <span id="example-requests-GETapi-flights-search">
 <blockquote>Example request:</blockquote>
@@ -1285,17 +1318,9 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/flights/search?departure_airport=YUL.&amp;arrival_airport=YVR.&amp;departure_date=vel&amp;trip_type=quibusdam&amp;return_date=minima&amp;page_size=20&amp;page=1" \
-    --header "Authorization: Bearer {ACCESS_TOKEN}" \
+    --get "http://localhost/api/flights/search?departure_airport=YUL&amp;arrival_airport=YVR&amp;departure_date=2022-02-01&amp;type=round-trip&amp;return_date=2022-02-20&amp;airline=AC&amp;sort_by=price&amp;sort_order=asc" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"departure_airport\": \"tcwygiwdwerhmd\",
-    \"arrival_airport\": \"jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp\",
-    \"departure_time\": \"17:24\",
-    \"page_size\": 12
-}"
-</code></pre></div>
+    --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
@@ -1304,41 +1329,33 @@ fetch(url, {
 );
 
 const params = {
-    "departure_airport": "YUL.",
-    "arrival_airport": "YVR.",
-    "departure_date": "vel",
-    "trip_type": "quibusdam",
-    "return_date": "minima",
-    "page_size": "20",
-    "page": "1",
+    "departure_airport": "YUL",
+    "arrival_airport": "YVR",
+    "departure_date": "2022-02-01",
+    "type": "round-trip",
+    "return_date": "2022-02-20",
+    "airline": "AC",
+    "sort_by": "price",
+    "sort_order": "asc",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
-    "Authorization": "Bearer {ACCESS_TOKEN}",
     "Content-Type": "application/json",
     "Accept": "application/json",
-};
-
-let body = {
-    "departure_airport": "tcwygiwdwerhmd",
-    "arrival_airport": "jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp",
-    "departure_time": "17:24",
-    "page_size": 12
 };
 
 fetch(url, {
     method: "GET",
     headers,
-    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-GETapi-flights-search">
             <blockquote>
-            <p>Example response (422):</p>
+            <p>Example response (500):</p>
         </blockquote>
                 <details class="annotation">
             <summary style="cursor: pointer;">
@@ -1347,20 +1364,584 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
-x-ratelimit-remaining: 56
+x-ratelimit-remaining: 59
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The given data was invalid.&quot;,
-    &quot;errors&quot;: {
-        &quot;departure_airport&quot;: [
-            &quot;The selected departure airport is invalid.&quot;
-        ],
-        &quot;arrival_airport&quot;: [
-            &quot;The selected arrival airport is invalid.&quot;
-        ]
-    }
+    &quot;message&quot;: &quot;Method Illuminate\\Validation\\Validator::validateUppercase does not exist.&quot;,
+    &quot;exception&quot;: &quot;BadMethodCallException&quot;,
+    &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Validation\\Validator.php&quot;,
+    &quot;line&quot;: 1534,
+    &quot;trace&quot;: [
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Validation\\Validator.php&quot;,
+            &quot;line&quot;: 610,
+            &quot;function&quot;: &quot;__call&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Validation\\Validator&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Validation\\Validator.php&quot;,
+            &quot;line&quot;: 416,
+            &quot;function&quot;: &quot;validateAttribute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Validation\\Validator&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Validation\\Validator.php&quot;,
+            &quot;line&quot;: 447,
+            &quot;function&quot;: &quot;passes&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Validation\\Validator&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Validation\\ValidatesWhenResolvedTrait.php&quot;,
+            &quot;line&quot;: 25,
+            &quot;function&quot;: &quot;fails&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Validation\\Validator&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Providers\\FormRequestServiceProvider.php&quot;,
+            &quot;line&quot;: 30,
+            &quot;function&quot;: &quot;validateResolved&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\FormRequest&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php&quot;,
+            &quot;line&quot;: 1265,
+            &quot;function&quot;: &quot;Illuminate\\Foundation\\Providers\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Providers\\FormRequestServiceProvider&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php&quot;,
+            &quot;line&quot;: 1229,
+            &quot;function&quot;: &quot;fireCallbackArray&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php&quot;,
+            &quot;line&quot;: 1215,
+            &quot;function&quot;: &quot;fireAfterResolvingCallbacks&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php&quot;,
+            &quot;line&quot;: 778,
+            &quot;function&quot;: &quot;fireResolvingCallbacks&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php&quot;,
+            &quot;line&quot;: 851,
+            &quot;function&quot;: &quot;resolve&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php&quot;,
+            &quot;line&quot;: 694,
+            &quot;function&quot;: &quot;resolve&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php&quot;,
+            &quot;line&quot;: 836,
+            &quot;function&quot;: &quot;make&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteDependencyResolverTrait.php&quot;,
+            &quot;line&quot;: 79,
+            &quot;function&quot;: &quot;make&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteDependencyResolverTrait.php&quot;,
+            &quot;line&quot;: 48,
+            &quot;function&quot;: &quot;transformDependency&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteDependencyResolverTrait.php&quot;,
+            &quot;line&quot;: 27,
+            &quot;function&quot;: &quot;resolveMethodDependencies&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php&quot;,
+            &quot;line&quot;: 40,
+            &quot;function&quot;: &quot;resolveClassMethodDependencies&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php&quot;,
+            &quot;line&quot;: 261,
+            &quot;function&quot;: &quot;dispatch&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php&quot;,
+            &quot;line&quot;: 205,
+            &quot;function&quot;: &quot;runController&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Route&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php&quot;,
+            &quot;line&quot;: 721,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Route&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 128,
+            &quot;function&quot;: &quot;Illuminate\\Routing\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php&quot;,
+            &quot;line&quot;: 50,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\SubstituteBindings&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php&quot;,
+            &quot;line&quot;: 127,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php&quot;,
+            &quot;line&quot;: 93,
+            &quot;function&quot;: &quot;handleRequest&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php&quot;,
+            &quot;line&quot;: 55,
+            &quot;function&quot;: &quot;handleRequestUsingNamedLimiter&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\sanctum\\src\\Http\\Middleware\\EnsureFrontendRequestsAreStateful.php&quot;,
+            &quot;line&quot;: 33,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 128,
+            &quot;function&quot;: &quot;Laravel\\Sanctum\\Http\\Middleware\\{closure}&quot;,
+            &quot;class&quot;: &quot;Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 103,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\sanctum\\src\\Http\\Middleware\\EnsureFrontendRequestsAreStateful.php&quot;,
+            &quot;line&quot;: 32,
+            &quot;function&quot;: &quot;then&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 103,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php&quot;,
+            &quot;line&quot;: 719,
+            &quot;function&quot;: &quot;then&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php&quot;,
+            &quot;line&quot;: 698,
+            &quot;function&quot;: &quot;runRouteWithinStack&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php&quot;,
+            &quot;line&quot;: 662,
+            &quot;function&quot;: &quot;runRoute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php&quot;,
+            &quot;line&quot;: 651,
+            &quot;function&quot;: &quot;dispatchToRoute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;dispatch&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 128,
+            &quot;function&quot;: &quot;Illuminate\\Foundation\\Http\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php&quot;,
+            &quot;line&quot;: 21,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php&quot;,
+            &quot;line&quot;: 31,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php&quot;,
+            &quot;line&quot;: 21,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php&quot;,
+            &quot;line&quot;: 40,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TrimStrings&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php&quot;,
+            &quot;line&quot;: 27,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php&quot;,
+            &quot;line&quot;: 86,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\fruitcake\\laravel-cors\\src\\HandleCors.php&quot;,
+            &quot;line&quot;: 52,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Fruitcake\\Cors\\HandleCors&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php&quot;,
+            &quot;line&quot;: 39,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Http\\Middleware\\TrustProxies&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php&quot;,
+            &quot;line&quot;: 103,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php&quot;,
+            &quot;line&quot;: 142,
+            &quot;function&quot;: &quot;then&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php&quot;,
+            &quot;line&quot;: 111,
+            &quot;function&quot;: &quot;sendRequestThroughRouter&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Strategies\\Responses\\ResponseCalls.php&quot;,
+            &quot;line&quot;: 299,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Strategies\\Responses\\ResponseCalls.php&quot;,
+            &quot;line&quot;: 287,
+            &quot;function&quot;: &quot;callLaravelOrLumenRoute&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Strategies\\Responses\\ResponseCalls.php&quot;,
+            &quot;line&quot;: 92,
+            &quot;function&quot;: &quot;makeApiCall&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Strategies\\Responses\\ResponseCalls.php&quot;,
+            &quot;line&quot;: 45,
+            &quot;function&quot;: &quot;makeResponseCall&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Strategies\\Responses\\ResponseCalls.php&quot;,
+            &quot;line&quot;: 35,
+            &quot;function&quot;: &quot;makeResponseCallIfConditionsPass&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Extractor.php&quot;,
+            &quot;line&quot;: 209,
+            &quot;function&quot;: &quot;__invoke&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Extractor.php&quot;,
+            &quot;line&quot;: 163,
+            &quot;function&quot;: &quot;iterateThroughStrategies&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Extracting\\Extractor.php&quot;,
+            &quot;line&quot;: 95,
+            &quot;function&quot;: &quot;fetchResponses&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\GroupedEndpoints\\GroupedEndpointsFromApp.php&quot;,
+            &quot;line&quot;: 122,
+            &quot;function&quot;: &quot;processRoute&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\GroupedEndpoints\\GroupedEndpointsFromApp.php&quot;,
+            &quot;line&quot;: 69,
+            &quot;function&quot;: &quot;extractEndpointsInfoFromLaravelApp&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\GroupedEndpoints\\GroupedEndpointsFromApp.php&quot;,
+            &quot;line&quot;: 47,
+            &quot;function&quot;: &quot;extractEndpointsInfoAndWriteToDisk&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\knuckleswtf\\scribe\\src\\Commands\\GenerateDocumentation.php&quot;,
+            &quot;line&quot;: 51,
+            &quot;function&quot;: &quot;get&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php&quot;,
+            &quot;line&quot;: 36,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Commands\\GenerateDocumentation&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php&quot;,
+            &quot;line&quot;: 40,
+            &quot;function&quot;: &quot;Illuminate\\Container\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php&quot;,
+            &quot;line&quot;: 93,
+            &quot;function&quot;: &quot;unwrapIfClosure&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Util&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php&quot;,
+            &quot;line&quot;: 35,
+            &quot;function&quot;: &quot;callBoundMethod&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php&quot;,
+            &quot;line&quot;: 653,
+            &quot;function&quot;: &quot;call&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php&quot;,
+            &quot;line&quot;: 136,
+            &quot;function&quot;: &quot;call&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\symfony\\console\\Command\\Command.php&quot;,
+            &quot;line&quot;: 298,
+            &quot;function&quot;: &quot;execute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Console\\Command&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php&quot;,
+            &quot;line&quot;: 120,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Command\\Command&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\symfony\\console\\Application.php&quot;,
+            &quot;line&quot;: 1040,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Console\\Command&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\symfony\\console\\Application.php&quot;,
+            &quot;line&quot;: 301,
+            &quot;function&quot;: &quot;doRunCommand&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\symfony\\console\\Application.php&quot;,
+            &quot;line&quot;: 171,
+            &quot;function&quot;: &quot;doRun&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php&quot;,
+            &quot;line&quot;: 94,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php&quot;,
+            &quot;line&quot;: 129,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;C:\\Users\\Alfredo\\Documents\\server\\laravel\\trip-builder\\artisan&quot;,
+            &quot;line&quot;: 35,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Console\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        }
+    ]
 }</code>
  </pre>
     </span>
@@ -1376,7 +1957,7 @@ access-control-allow-origin: *
 </span>
 <form id="form-GETapi-flights-search" data-method="GET"
       data-path="api/flights/search"
-      data-authed="1"
+      data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -1403,17 +1984,6 @@ access-control-allow-origin: *
             <b><code>api/flights/search</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Authorization" class="auth-value"               data-endpoint="GETapi-flights-search"
-               value="Bearer {ACCESS_TOKEN}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {ACCESS_TOKEN}</code></p>
-            </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
@@ -1443,10 +2013,10 @@ access-control-allow-origin: *
  &nbsp;
                 <input type="text" style="display: none"
                name="departure_airport"                data-endpoint="GETapi-flights-search"
-               value="YUL."
+               value="YUL"
                data-component="query">
     <br>
-<p>The departure airport <code>code</code>. Example: <code>YUL.</code></p>
+<p>The departure airport IATA <strong>code</strong>. Example: <code>YUL</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>arrival_airport</code></b>&nbsp;&nbsp;
@@ -1454,10 +2024,10 @@ access-control-allow-origin: *
  &nbsp;
                 <input type="text" style="display: none"
                name="arrival_airport"                data-endpoint="GETapi-flights-search"
-               value="YVR."
+               value="YVR"
                data-component="query">
     <br>
-<p>The arrival airport <code>code</code>. Example: <code>YVR.</code></p>
+<p>The arrival airport IATA <strong>code</strong>. Example: <code>YVR</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>departure_date</code></b>&nbsp;&nbsp;
@@ -1465,21 +2035,21 @@ access-control-allow-origin: *
  &nbsp;
                 <input type="text" style="display: none"
                name="departure_date"                data-endpoint="GETapi-flights-search"
-               value="vel"
+               value="2022-02-01"
                data-component="query">
     <br>
-<p>date Date of departure. Format <code>YYYY-MM-DD</code> Example: <code>vel</code></p>
+<p>Date of departure. Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2022-02-01</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>trip_type</code></b>&nbsp;&nbsp;
+                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-               name="trip_type"                data-endpoint="GETapi-flights-search"
-               value="quibusdam"
+               name="type"                data-endpoint="GETapi-flights-search"
+               value="round-trip"
                data-component="query">
     <br>
-<p>Can be a <code>one-way</code> or <code>round-trip</code>. Example: <code>quibusdam</code></p>
+<p>Trip type, it can be a <strong>one-way</strong> or <strong>round-trip</strong>. Example: <code>round-trip</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>return_date</code></b>&nbsp;&nbsp;
@@ -1487,10 +2057,32 @@ access-control-allow-origin: *
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="return_date"                data-endpoint="GETapi-flights-search"
-               value="minima"
+               value="2022-02-20"
                data-component="query">
     <br>
-<p>date Date of return, required if <code>trip-type</code> is <code>round-trip</code>. Format <code>YYYY-MM-DD</code> Example: <code>minima</code></p>
+<p>Date of the return trip. This field is required when <code>type</code> is <code>round-trip</code>.  Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date after or equal to <code>departure_date</code>. Example: <code>2022-02-20</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>stops</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="stops"                data-endpoint="GETapi-flights-search"
+               value=""
+               data-component="query">
+    <br>
+<p>Number of stops, can be blank(all flights), 0(direct flights only) or 1. When 1, will filter flights with 1+ stops. Must be at least 0. Must not be greater than 1.</p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>airline</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="airline"                data-endpoint="GETapi-flights-search"
+               value="AC"
+               data-component="query">
+    <br>
+<p>IATA Code of the airline to filter the flights. Example: <code>AC</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page_size</code></b>&nbsp;&nbsp;
@@ -1498,10 +2090,10 @@ access-control-allow-origin: *
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page_size"                data-endpoint="GETapi-flights-search"
-               value="20"
+               value=""
                data-component="query">
     <br>
-<p>Size per page. Defaults to 10. Example: <code>20</code></p>
+<p>Size per page. Defaults to 10. Must not be greater than 100.</p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -1509,57 +2101,34 @@ access-control-allow-origin: *
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-flights-search"
-               value="1"
+               value=""
                data-component="query">
     <br>
-<p>Page to view. Example: <code>1</code></p>
+<p>Page to view.</p>
             </div>
-                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>departure_airport</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="departure_airport"                data-endpoint="GETapi-flights-search"
-               value="tcwygiwdwerhmd"
-               data-component="body">
-    <br>
-<p>Must be at least 2 characters. Example: <code>tcwygiwdwerhmd</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>arrival_airport</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="arrival_airport"                data-endpoint="GETapi-flights-search"
-               value="jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp"
-               data-component="body">
-    <br>
-<p>Must be at least 2 characters. Example: <code>jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>departure_time</code></b>&nbsp;&nbsp;
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_by</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-               name="departure_time"                data-endpoint="GETapi-flights-search"
-               value="17:24"
-               data-component="body">
+               name="sort_by"                data-endpoint="GETapi-flights-search"
+               value="price"
+               data-component="query">
     <br>
-<p>Must be a valid date in the format <code>H:i</code>. Example: <code>17:24</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>page_size</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+<p>Sorting field, currently can be only <strong>price</strong>. Example: <code>price</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
 <i>optional</i> &nbsp;
-                <input type="number" style="display: none"
-               name="page_size"                data-endpoint="GETapi-flights-search"
-               value="12"
-               data-component="body">
+                <input type="text" style="display: none"
+               name="sort_order"                data-endpoint="GETapi-flights-search"
+               value="asc"
+               data-component="query">
     <br>
-<p>Must not be greater than 100. Example: <code>12</code></p>
-        </div>
-        </form>
+<p>Sorting order, can be either <strong>asc</strong> or <strong>desc</strong>. This field is required when <code>sort_by</code> is present. Example: <code>asc</code></p>
+            </div>
+                </form>
 
             
 

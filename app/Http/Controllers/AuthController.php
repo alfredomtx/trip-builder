@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Hash;
 /**
  * @group Auth
  *
+ * Bearer Token authentication.
+ *
+ * The authentication uses a bearer token to validate the requests.
+ *
+ * That means, you can send a request to `/register` endpoint to create a user.
+ * After that, login with the user sending a request to `/login` to receive the Bearer Token.
+ *
+ * The Bearer token must be sent in the `Authorization` header in subsequent requests to endpoints that require authentication.
+ *
  */
 class AuthController extends Controller
 {
@@ -80,6 +89,8 @@ class AuthController extends Controller
 
     /**
      * Logout
+     *
+     * Invalidate the user's current access token.
      *
      * @response 200 {
             "message": "Logged out"

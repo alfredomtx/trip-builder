@@ -55,6 +55,26 @@ paths:
       description: 'Store a newly created resource in storage.'
       parameters:
         -
+          in: query
+          name: name
+          description: 'Name of the airline to filter the flights.'
+          example: 'Air Canada'
+          required: true
+          schema:
+            type: string
+            description: 'Name of the airline to filter the flights.'
+            example: 'Air Canada'
+        -
+          in: query
+          name: code
+          description: 'IATA Code of the airline to filter the flights.'
+          example: AC
+          required: true
+          schema:
+            type: string
+            description: 'IATA Code of the airline to filter the flights.'
+            example: AC
+        -
           in: header
           name: Authorization
           description: ''
@@ -78,24 +98,6 @@ paths:
       responses: {  }
       tags:
         - Airline
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: 'Must be at least 2 characters.'
-                  example: oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw
-                code:
-                  type: string
-                  description: 'Must be at least 2 characters.'
-                  example: ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay
-              required:
-                - name
-                - code
   '/api/airlines/{id}':
     get:
       summary: 'Display the specified resource.'
@@ -143,6 +145,26 @@ paths:
       operationId: updateTheSpecifiedResourceInStorage
       description: ''
       parameters:
+        -
+          in: query
+          name: name
+          description: 'Name of the airline to filter the flights.'
+          example: 'Air Canada'
+          required: true
+          schema:
+            type: string
+            description: 'Name of the airline to filter the flights.'
+            example: 'Air Canada'
+        -
+          in: query
+          name: code
+          description: 'IATA Code of the airline to filter the flights.'
+          example: AC
+          required: true
+          schema:
+            type: string
+            description: 'IATA Code of the airline to filter the flights.'
+            example: AC
         -
           in: header
           name: Authorization
@@ -258,11 +280,11 @@ paths:
                 email:
                   type: string
                   description: 'Must be a valid email address.'
-                  example: xkuphal@example.org
+                  example: kwest@example.org
                 password:
                   type: string
                   description: ''
-                  example: 'Hzs4[BBx3O+|~'
+                  example: 'thoEW:d(;p@?}a'
               required:
                 - email
                 - password
@@ -271,7 +293,7 @@ paths:
     post:
       summary: Logout
       operationId: logout
-      description: ''
+      description: "Invalidate the user's current access token."
       parameters:
         -
           in: header
@@ -311,9 +333,9 @@ paths:
         - Auth
   /api/register:
     post:
-      summary: 'Register user'
-      operationId: registerUser
-      description: 'Register your user for authentication.'
+      summary: Register
+      operationId: register
+      description: 'Register a user for authentication.'
       parameters:
         -
           in: header
@@ -342,15 +364,15 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: est
+                  example: omnis
                 email:
                   type: string
                   description: 'Must be a valid email address.'
-                  example: henri17@example.com
+                  example: wkertzmann@example.net
                 password:
                   type: string
                   description: ''
-                  example: 'I*<_Aq!n2L?/(-PFTj'
+                  example: p2;SekF
               required:
                 - name
                 - email
@@ -358,87 +380,120 @@ paths:
       security: []
   /api/flights/search:
     get:
-      summary: 'Search for flights'
-      operationId: searchForFlights
-      description: 'Search for flights according to search criteria and return paginated result.'
+      summary: 'Search flights'
+      operationId: searchFlights
+      description: "Search for flights according to search criteria and return paginated result.\n\nBriefly, flights can be searched by departure airport, arrival airport, departure date and return date(if is a round trip)."
       parameters:
         -
           in: query
           name: departure_airport
-          description: 'The departure airport `code`.'
-          example: YUL.
+          description: 'The departure airport IATA **code**.'
+          example: YUL
           required: true
           schema:
             type: string
-            description: 'The departure airport `code`.'
-            example: YUL.
+            description: 'The departure airport IATA **code**.'
+            example: YUL
         -
           in: query
           name: arrival_airport
-          description: 'The arrival airport `code`.'
-          example: YVR.
+          description: 'The arrival airport IATA **code**.'
+          example: YVR
           required: true
           schema:
             type: string
-            description: 'The arrival airport `code`.'
-            example: YVR.
+            description: 'The arrival airport IATA **code**.'
+            example: YVR
         -
           in: query
           name: departure_date
-          description: 'date Date of departure. Format `YYYY-MM-DD`'
-          example: vel
+          description: 'Date of departure. Must be a valid date in the format <code>Y-m-d</code>.'
+          example: '2022-02-01'
           required: true
           schema:
             type: string
-            description: 'date Date of departure. Format `YYYY-MM-DD`'
-            example: vel
+            description: 'Date of departure. Must be a valid date in the format <code>Y-m-d</code>.'
+            example: '2022-02-01'
         -
           in: query
-          name: trip_type
-          description: 'Can be a `one-way` or `round-trip`.'
-          example: quibusdam
+          name: type
+          description: 'Trip type, it can be a **one-way** or **round-trip**.'
+          example: round-trip
           required: true
           schema:
             type: string
-            description: 'Can be a `one-way` or `round-trip`.'
-            example: quibusdam
+            description: 'Trip type, it can be a **one-way** or **round-trip**.'
+            example: round-trip
         -
           in: query
           name: return_date
-          description: 'date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`'
-          example: minima
+          description: 'Date of the return trip. This field is required when <code>type</code> is <code>round-trip</code>.  Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date after or equal to <code>departure_date</code>.'
+          example: '2022-02-20'
           required: false
           schema:
             type: string
-            description: 'date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`'
-            example: minima
+            description: 'Date of the return trip. This field is required when <code>type</code> is <code>round-trip</code>.  Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date after or equal to <code>departure_date</code>.'
+            example: '2022-02-20'
         -
           in: query
-          name: page_size
-          description: 'Size per page. Defaults to 10.'
-          example: 20
+          name: stops
+          description: 'Number of stops, can be blank(all flights), 0(direct flights only) or 1. When 1, will filter flights with 1+ stops. Must be at least 0. Must not be greater than 1.'
+          example: null
           required: false
           schema:
             type: integer
-            description: 'Size per page. Defaults to 10.'
-            example: 20
+            description: 'Number of stops, can be blank(all flights), 0(direct flights only) or 1. When 1, will filter flights with 1+ stops. Must be at least 0. Must not be greater than 1.'
+            example: null
+        -
+          in: query
+          name: airline
+          description: 'IATA Code of the airline to filter the flights.'
+          example: AC
+          required: false
+          schema:
+            type: string
+            description: 'IATA Code of the airline to filter the flights.'
+            example: AC
+        -
+          in: query
+          name: page_size
+          description: 'Size per page. Defaults to 10. Must not be greater than 100.'
+          example: null
+          required: false
+          schema:
+            type: integer
+            description: 'Size per page. Defaults to 10. Must not be greater than 100.'
+            example: null
         -
           in: query
           name: page
           description: 'Page to view.'
-          example: 1
+          example: null
           required: false
           schema:
             type: integer
             description: 'Page to view.'
-            example: 1
+            example: null
         -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {ACCESS_TOKEN}'
+          in: query
+          name: sort_by
+          description: 'Sorting field, currently can be only **price**.'
+          example: price
+          required: false
           schema:
             type: string
+            description: 'Sorting field, currently can be only **price**.'
+            example: price
+        -
+          in: query
+          name: sort_order
+          description: 'Sorting order, can be either **asc** or **desc**. This field is required when <code>sort_by</code> is present.'
+          example: asc
+          required: false
+          schema:
+            type: string
+            description: 'Sorting order, can be either **asc** or **desc**. This field is required when <code>sort_by</code> is present.'
+            example: asc
         -
           in: header
           name: Content-Type
@@ -454,76 +509,1037 @@ paths:
           schema:
             type: string
       responses:
-        422:
+        500:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The given data was invalid.'
-                  errors:
-                    departure_airport:
-                      - 'The selected departure airport is invalid.'
-                    arrival_airport:
-                      - 'The selected arrival airport is invalid.'
+                  message: 'Method Illuminate\Validation\Validator::validateUppercase does not exist.'
+                  exception: BadMethodCallException
+                  file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                  line: 1534
+                  trace:
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                      line: 610
+                      function: __call
+                      class: Illuminate\Validation\Validator
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                      line: 416
+                      function: validateAttribute
+                      class: Illuminate\Validation\Validator
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                      line: 447
+                      function: passes
+                      class: Illuminate\Validation\Validator
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\ValidatesWhenResolvedTrait.php'
+                      line: 25
+                      function: fails
+                      class: Illuminate\Validation\Validator
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Providers\FormRequestServiceProvider.php'
+                      line: 30
+                      function: validateResolved
+                      class: Illuminate\Foundation\Http\FormRequest
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                      line: 1265
+                      function: 'Illuminate\Foundation\Providers\{closure}'
+                      class: Illuminate\Foundation\Providers\FormRequestServiceProvider
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                      line: 1229
+                      function: fireCallbackArray
+                      class: Illuminate\Container\Container
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                      line: 1215
+                      function: fireAfterResolvingCallbacks
+                      class: Illuminate\Container\Container
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                      line: 778
+                      function: fireResolvingCallbacks
+                      class: Illuminate\Container\Container
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Application.php'
+                      line: 851
+                      function: resolve
+                      class: Illuminate\Container\Container
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                      line: 694
+                      function: resolve
+                      class: Illuminate\Foundation\Application
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Application.php'
+                      line: 836
+                      function: make
+                      class: Illuminate\Container\Container
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\RouteDependencyResolverTrait.php'
+                      line: 79
+                      function: make
+                      class: Illuminate\Foundation\Application
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\RouteDependencyResolverTrait.php'
+                      line: 48
+                      function: transformDependency
+                      class: Illuminate\Routing\ControllerDispatcher
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\RouteDependencyResolverTrait.php'
+                      line: 27
+                      function: resolveMethodDependencies
+                      class: Illuminate\Routing\ControllerDispatcher
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php'
+                      line: 40
+                      function: resolveClassMethodDependencies
+                      class: Illuminate\Routing\ControllerDispatcher
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Route.php'
+                      line: 261
+                      function: dispatch
+                      class: Illuminate\Routing\ControllerDispatcher
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Route.php'
+                      line: 205
+                      function: runController
+                      class: Illuminate\Routing\Route
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                      line: 721
+                      function: run
+                      class: Illuminate\Routing\Route
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 128
+                      function: 'Illuminate\Routing\{closure}'
+                      class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php'
+                      line: 50
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Routing\Middleware\SubstituteBindings
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
+                      line: 127
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
+                      line: 93
+                      function: handleRequest
+                      class: Illuminate\Routing\Middleware\ThrottleRequests
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
+                      line: 55
+                      function: handleRequestUsingNamedLimiter
+                      class: Illuminate\Routing\Middleware\ThrottleRequests
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Routing\Middleware\ThrottleRequests
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\sanctum\src\Http\Middleware\EnsureFrontendRequestsAreStateful.php'
+                      line: 33
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 128
+                      function: 'Laravel\Sanctum\Http\Middleware\{closure}'
+                      class: Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 103
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\sanctum\src\Http\Middleware\EnsureFrontendRequestsAreStateful.php'
+                      line: 32
+                      function: then
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 103
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                      line: 719
+                      function: then
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                      line: 698
+                      function: runRouteWithinStack
+                      class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                      line: 662
+                      function: runRoute
+                      class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                      line: 651
+                      function: dispatchToRoute
+                      class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php'
+                      line: 167
+                      function: dispatch
+                      class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 128
+                      function: 'Illuminate\Foundation\Http\{closure}'
+                      class: Illuminate\Foundation\Http\Kernel
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php'
+                      line: 21
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php'
+                      line: 31
+                      function: handle
+                      class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php'
+                      line: 21
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php'
+                      line: 40
+                      function: handle
+                      class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Foundation\Http\Middleware\TrimStrings
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php'
+                      line: 27
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php'
+                      line: 86
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\fruitcake\laravel-cors\src\HandleCors.php'
+                      line: 52
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Fruitcake\Cors\HandleCors
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php'
+                      line: 39
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 167
+                      function: handle
+                      class: Illuminate\Http\Middleware\TrustProxies
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                      line: 103
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php'
+                      line: 142
+                      function: then
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php'
+                      line: 111
+                      function: sendRequestThroughRouter
+                      class: Illuminate\Foundation\Http\Kernel
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                      line: 299
+                      function: handle
+                      class: Illuminate\Foundation\Http\Kernel
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                      line: 287
+                      function: callLaravelOrLumenRoute
+                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                      line: 92
+                      function: makeApiCall
+                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                      line: 45
+                      function: makeResponseCall
+                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                      line: 35
+                      function: makeResponseCallIfConditionsPass
+                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Extractor.php'
+                      line: 209
+                      function: __invoke
+                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Extractor.php'
+                      line: 163
+                      function: iterateThroughStrategies
+                      class: Knuckles\Scribe\Extracting\Extractor
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Extractor.php'
+                      line: 95
+                      function: fetchResponses
+                      class: Knuckles\Scribe\Extracting\Extractor
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\GroupedEndpoints\GroupedEndpointsFromApp.php'
+                      line: 122
+                      function: processRoute
+                      class: Knuckles\Scribe\Extracting\Extractor
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\GroupedEndpoints\GroupedEndpointsFromApp.php'
+                      line: 69
+                      function: extractEndpointsInfoFromLaravelApp
+                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\GroupedEndpoints\GroupedEndpointsFromApp.php'
+                      line: 47
+                      function: extractEndpointsInfoAndWriteToDisk
+                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Commands\GenerateDocumentation.php'
+                      line: 51
+                      function: get
+                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php'
+                      line: 36
+                      function: handle
+                      class: Knuckles\Scribe\Commands\GenerateDocumentation
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Util.php'
+                      line: 40
+                      function: 'Illuminate\Container\{closure}'
+                      class: Illuminate\Container\BoundMethod
+                      type: '::'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php'
+                      line: 93
+                      function: unwrapIfClosure
+                      class: Illuminate\Container\Util
+                      type: '::'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php'
+                      line: 35
+                      function: callBoundMethod
+                      class: Illuminate\Container\BoundMethod
+                      type: '::'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                      line: 653
+                      function: call
+                      class: Illuminate\Container\BoundMethod
+                      type: '::'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Console\Command.php'
+                      line: 136
+                      function: call
+                      class: Illuminate\Container\Container
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Command\Command.php'
+                      line: 298
+                      function: execute
+                      class: Illuminate\Console\Command
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Console\Command.php'
+                      line: 120
+                      function: run
+                      class: Symfony\Component\Console\Command\Command
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Application.php'
+                      line: 1040
+                      function: run
+                      class: Illuminate\Console\Command
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Application.php'
+                      line: 301
+                      function: doRunCommand
+                      class: Symfony\Component\Console\Application
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Application.php'
+                      line: 171
+                      function: doRun
+                      class: Symfony\Component\Console\Application
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Console\Application.php'
+                      line: 94
+                      function: run
+                      class: Symfony\Component\Console\Application
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Console\Kernel.php'
+                      line: 129
+                      function: run
+                      class: Illuminate\Console\Application
+                      type: '->'
+                    -
+                      file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\artisan'
+                      line: 35
+                      function: handle
+                      class: Illuminate\Foundation\Console\Kernel
+                      type: '->'
                 properties:
                   message:
                     type: string
-                    example: 'The given data was invalid.'
-                  errors:
-                    type: object
-                    properties:
-                      departure_airport:
-                        type: array
-                        example:
-                          - 'The selected departure airport is invalid.'
-                        items:
+                    example: 'Method Illuminate\Validation\Validator::validateUppercase does not exist.'
+                  exception:
+                    type: string
+                    example: BadMethodCallException
+                  file:
+                    type: string
+                    example: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                  line:
+                    type: integer
+                    example: 1534
+                  trace:
+                    type: array
+                    example:
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                        line: 610
+                        function: __call
+                        class: Illuminate\Validation\Validator
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                        line: 416
+                        function: validateAttribute
+                        class: Illuminate\Validation\Validator
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                        line: 447
+                        function: passes
+                        class: Illuminate\Validation\Validator
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\ValidatesWhenResolvedTrait.php'
+                        line: 25
+                        function: fails
+                        class: Illuminate\Validation\Validator
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Providers\FormRequestServiceProvider.php'
+                        line: 30
+                        function: validateResolved
+                        class: Illuminate\Foundation\Http\FormRequest
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                        line: 1265
+                        function: 'Illuminate\Foundation\Providers\{closure}'
+                        class: Illuminate\Foundation\Providers\FormRequestServiceProvider
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                        line: 1229
+                        function: fireCallbackArray
+                        class: Illuminate\Container\Container
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                        line: 1215
+                        function: fireAfterResolvingCallbacks
+                        class: Illuminate\Container\Container
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                        line: 778
+                        function: fireResolvingCallbacks
+                        class: Illuminate\Container\Container
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Application.php'
+                        line: 851
+                        function: resolve
+                        class: Illuminate\Container\Container
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                        line: 694
+                        function: resolve
+                        class: Illuminate\Foundation\Application
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Application.php'
+                        line: 836
+                        function: make
+                        class: Illuminate\Container\Container
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\RouteDependencyResolverTrait.php'
+                        line: 79
+                        function: make
+                        class: Illuminate\Foundation\Application
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\RouteDependencyResolverTrait.php'
+                        line: 48
+                        function: transformDependency
+                        class: Illuminate\Routing\ControllerDispatcher
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\RouteDependencyResolverTrait.php'
+                        line: 27
+                        function: resolveMethodDependencies
+                        class: Illuminate\Routing\ControllerDispatcher
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php'
+                        line: 40
+                        function: resolveClassMethodDependencies
+                        class: Illuminate\Routing\ControllerDispatcher
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Route.php'
+                        line: 261
+                        function: dispatch
+                        class: Illuminate\Routing\ControllerDispatcher
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Route.php'
+                        line: 205
+                        function: runController
+                        class: Illuminate\Routing\Route
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                        line: 721
+                        function: run
+                        class: Illuminate\Routing\Route
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 128
+                        function: 'Illuminate\Routing\{closure}'
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php'
+                        line: 50
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Routing\Middleware\SubstituteBindings
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
+                        line: 127
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
+                        line: 93
+                        function: handleRequest
+                        class: Illuminate\Routing\Middleware\ThrottleRequests
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
+                        line: 55
+                        function: handleRequestUsingNamedLimiter
+                        class: Illuminate\Routing\Middleware\ThrottleRequests
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Routing\Middleware\ThrottleRequests
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\sanctum\src\Http\Middleware\EnsureFrontendRequestsAreStateful.php'
+                        line: 33
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 128
+                        function: 'Laravel\Sanctum\Http\Middleware\{closure}'
+                        class: Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 103
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\sanctum\src\Http\Middleware\EnsureFrontendRequestsAreStateful.php'
+                        line: 32
+                        function: then
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 103
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                        line: 719
+                        function: then
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                        line: 698
+                        function: runRouteWithinStack
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                        line: 662
+                        function: runRoute
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Routing\Router.php'
+                        line: 651
+                        function: dispatchToRoute
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php'
+                        line: 167
+                        function: dispatch
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 128
+                        function: 'Illuminate\Foundation\Http\{closure}'
+                        class: Illuminate\Foundation\Http\Kernel
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php'
+                        line: 21
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php'
+                        line: 31
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php'
+                        line: 21
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php'
+                        line: 40
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\TrimStrings
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php'
+                        line: 27
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php'
+                        line: 86
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\fruitcake\laravel-cors\src\HandleCors.php'
+                        line: 52
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Fruitcake\Cors\HandleCors
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php'
+                        line: 39
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 167
+                        function: handle
+                        class: Illuminate\Http\Middleware\TrustProxies
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php'
+                        line: 103
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php'
+                        line: 142
+                        function: then
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php'
+                        line: 111
+                        function: sendRequestThroughRouter
+                        class: Illuminate\Foundation\Http\Kernel
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                        line: 299
+                        function: handle
+                        class: Illuminate\Foundation\Http\Kernel
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                        line: 287
+                        function: callLaravelOrLumenRoute
+                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                        line: 92
+                        function: makeApiCall
+                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                        line: 45
+                        function: makeResponseCall
+                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Strategies\Responses\ResponseCalls.php'
+                        line: 35
+                        function: makeResponseCallIfConditionsPass
+                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Extractor.php'
+                        line: 209
+                        function: __invoke
+                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Extractor.php'
+                        line: 163
+                        function: iterateThroughStrategies
+                        class: Knuckles\Scribe\Extracting\Extractor
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Extracting\Extractor.php'
+                        line: 95
+                        function: fetchResponses
+                        class: Knuckles\Scribe\Extracting\Extractor
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\GroupedEndpoints\GroupedEndpointsFromApp.php'
+                        line: 122
+                        function: processRoute
+                        class: Knuckles\Scribe\Extracting\Extractor
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\GroupedEndpoints\GroupedEndpointsFromApp.php'
+                        line: 69
+                        function: extractEndpointsInfoFromLaravelApp
+                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\GroupedEndpoints\GroupedEndpointsFromApp.php'
+                        line: 47
+                        function: extractEndpointsInfoAndWriteToDisk
+                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\knuckleswtf\scribe\src\Commands\GenerateDocumentation.php'
+                        line: 51
+                        function: get
+                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php'
+                        line: 36
+                        function: handle
+                        class: Knuckles\Scribe\Commands\GenerateDocumentation
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Util.php'
+                        line: 40
+                        function: 'Illuminate\Container\{closure}'
+                        class: Illuminate\Container\BoundMethod
+                        type: '::'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php'
+                        line: 93
+                        function: unwrapIfClosure
+                        class: Illuminate\Container\Util
+                        type: '::'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php'
+                        line: 35
+                        function: callBoundMethod
+                        class: Illuminate\Container\BoundMethod
+                        type: '::'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Container\Container.php'
+                        line: 653
+                        function: call
+                        class: Illuminate\Container\BoundMethod
+                        type: '::'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Console\Command.php'
+                        line: 136
+                        function: call
+                        class: Illuminate\Container\Container
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Command\Command.php'
+                        line: 298
+                        function: execute
+                        class: Illuminate\Console\Command
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Console\Command.php'
+                        line: 120
+                        function: run
+                        class: Symfony\Component\Console\Command\Command
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Application.php'
+                        line: 1040
+                        function: run
+                        class: Illuminate\Console\Command
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Application.php'
+                        line: 301
+                        function: doRunCommand
+                        class: Symfony\Component\Console\Application
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\symfony\console\Application.php'
+                        line: 171
+                        function: doRun
+                        class: Symfony\Component\Console\Application
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Console\Application.php'
+                        line: 94
+                        function: run
+                        class: Symfony\Component\Console\Application
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Foundation\Console\Kernel.php'
+                        line: 129
+                        function: run
+                        class: Illuminate\Console\Application
+                        type: '->'
+                      -
+                        file: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\artisan'
+                        line: 35
+                        function: handle
+                        class: Illuminate\Foundation\Console\Kernel
+                        type: '->'
+                    items:
+                      type: object
+                      properties:
+                        file:
                           type: string
-                      arrival_airport:
-                        type: array
-                        example:
-                          - 'The selected arrival airport is invalid.'
-                        items:
+                          example: 'C:\Users\Alfredo\Documents\server\laravel\trip-builder\vendor\laravel\framework\src\Illuminate\Validation\Validator.php'
+                        line:
+                          type: integer
+                          example: 610
+                        function:
                           type: string
+                          example: __call
+                        class:
+                          type: string
+                          example: Illuminate\Validation\Validator
+                        type:
+                          type: string
+                          example: '->'
       tags:
         - Flight
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                departure_airport:
-                  type: string
-                  description: 'Must be at least 2 characters.'
-                  example: tcwygiwdwerhmd
-                arrival_airport:
-                  type: string
-                  description: 'Must be at least 2 characters.'
-                  example: jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp
-                departure_time:
-                  type: string
-                  description: 'Must be a valid date in the format <code>H:i</code>.'
-                  example: '17:24'
-                page_size:
-                  type: integer
-                  description: 'Must not be greater than 100.'
-                  example: 12
-              required:
-                - departure_airport
-                - arrival_airport
+      security: []
 tags:
   -
     name: Airline
-    description: "\nAPIs to manage the airline resource."
+    description: "\nAPIs to manage the airline resource.\n\nThis is the only resource available currently as a REST endpoint.\nIt means there are endpoints for every operation: create, delete, update, search.\n\nIdeally, there should be also REST endpoints for other resources, such as Flights, Cities and Airports."
   -
     name: Auth
-    description: ''
+    description: "\nBearer Token authentication.\n\nThe authentication uses a bearer token to validate the requests.\n\nThat means, you can send a request to `/register` endpoint to create a user.\nAfter that, login with the user sending a request to `/login` to receive the Bearer Token.\n\nThe Bearer token must be sent in the `Authorization` header in subsequent requests to endpoints that require authentication."
   -
     name: Flight
-    description: "\nAPIs to search for flights."
+    description: "\nAPI to search for flights."
 components:
   securitySchemes:
     default:

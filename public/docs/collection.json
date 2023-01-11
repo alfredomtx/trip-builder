@@ -10,14 +10,14 @@
     ],
     "info": {
         "name": "Trip Builder API",
-        "_postman_id": "2297cc8a-99dd-4879-a5fa-3f030957a9a7",
+        "_postman_id": "97c24152-ce6c-4e24-94f2-374cd6bebc1b",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
         {
             "name": "Airline",
-            "description": "\nAPIs to manage the airline resource.",
+            "description": "\nAPIs to manage the airline resource.\n\nThis is the only resource available currently as a REST endpoint.\nIt means there are endpoints for every operation: create, delete, update, search.\n\nIdeally, there should be also REST endpoints for other resources, such as Flights, Cities and Airports.",
             "item": [
                 {
                     "name": "Display a listing of the resources",
@@ -123,8 +123,21 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/airlines",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/airlines"
+                            "query": [
+                                {
+                                    "key": "name",
+                                    "value": "Air+Canada",
+                                    "description": "Name of the airline to filter the flights.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "code",
+                                    "value": "AC",
+                                    "description": "IATA Code of the airline to filter the flights.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/airlines?name=Air+Canada&code=AC"
                         },
                         "method": "POST",
                         "header": [
@@ -137,10 +150,7 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"name\":\"oikpelymkzlancgkjxuoglvzsbtgroqxukbazvfmxuayofw\",\"code\":\"ncjtvpeznlbnxfwnzldfnciaqnfjexgsplsxmywvrpitay\"}"
-                        },
+                        "body": null,
                         "description": "Store a newly created resource in storage."
                     },
                     "response": []
@@ -151,8 +161,21 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/airlines\/:id",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/airlines\/:id",
+                            "query": [
+                                {
+                                    "key": "name",
+                                    "value": "Air+Canada",
+                                    "description": "Name of the airline to filter the flights.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "code",
+                                    "value": "AC",
+                                    "description": "IATA Code of the airline to filter the flights.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/airlines\/:id?name=Air+Canada&code=AC",
                             "variable": [
                                 {
                                     "id": "id",
@@ -225,7 +248,7 @@
         },
         {
             "name": "Auth",
-            "description": "",
+            "description": "\nBearer Token authentication.\n\nThe authentication uses a bearer token to validate the requests.\n\nThat means, you can send a request to `\/register` endpoint to create a user.\nAfter that, login with the user sending a request to `\/login` to receive the Bearer Token.\n\nThe Bearer token must be sent in the `Authorization` header in subsequent requests to endpoints that require authentication.",
             "item": [
                 {
                     "name": "Authenticate",
@@ -249,7 +272,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"xkuphal@example.org\",\"password\":\"Hzs4[BBx3O+|~\"}"
+                            "raw": "{\"email\":\"kwest@example.org\",\"password\":\"thoEW:d(;p@?}a\"}"
                         },
                         "description": "Authenticate user and returns a `bearer` token.",
                         "auth": {
@@ -279,7 +302,7 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Invalidate the user's current access token."
                     },
                     "response": [
                         {
@@ -291,7 +314,7 @@
                     ]
                 },
                 {
-                    "name": "Register user",
+                    "name": "Register",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -312,9 +335,9 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"est\",\"email\":\"henri17@example.com\",\"password\":\"I*<_Aq!n2L?\\\/(-PFTj\"}"
+                            "raw": "{\"name\":\"omnis\",\"email\":\"wkertzmann@example.net\",\"password\":\"p2;SekF\"}"
                         },
-                        "description": "Register your user for authentication.",
+                        "description": "Register a user for authentication.",
                         "auth": {
                             "type": "noauth"
                         }
@@ -325,10 +348,10 @@
         },
         {
             "name": "Flight",
-            "description": "\nAPIs to search for flights.",
+            "description": "\nAPI to search for flights.",
             "item": [
                 {
-                    "name": "Search for flights",
+                    "name": "Search flights",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -336,48 +359,72 @@
                             "query": [
                                 {
                                     "key": "departure_airport",
-                                    "value": "YUL.",
-                                    "description": "The departure airport `code`.",
+                                    "value": "YUL",
+                                    "description": "The departure airport IATA **code**.",
                                     "disabled": false
                                 },
                                 {
                                     "key": "arrival_airport",
-                                    "value": "YVR.",
-                                    "description": "The arrival airport `code`.",
+                                    "value": "YVR",
+                                    "description": "The arrival airport IATA **code**.",
                                     "disabled": false
                                 },
                                 {
                                     "key": "departure_date",
-                                    "value": "vel",
-                                    "description": "date Date of departure. Format `YYYY-MM-DD`",
+                                    "value": "2022-02-01",
+                                    "description": "Date of departure. Must be a valid date in the format Y-m-d.",
                                     "disabled": false
                                 },
                                 {
-                                    "key": "trip_type",
-                                    "value": "quibusdam",
-                                    "description": "Can be a `one-way` or `round-trip`.",
+                                    "key": "type",
+                                    "value": "round-trip",
+                                    "description": "Trip type, it can be a **one-way** or **round-trip**.",
                                     "disabled": false
                                 },
                                 {
                                     "key": "return_date",
-                                    "value": "minima",
-                                    "description": "date Date of return, required if `trip-type` is `round-trip`. Format `YYYY-MM-DD`",
+                                    "value": "2022-02-20",
+                                    "description": "Date of the return trip. This field is required when type is round-trip.  Must be a valid date. Must be a valid date in the format Y-m-d. Must be a date after or equal to departure_date.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "stops",
+                                    "value": "",
+                                    "description": "Number of stops, can be blank(all flights), 0(direct flights only) or 1. When 1, will filter flights with 1+ stops. Must be at least 0. Must not be greater than 1.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "airline",
+                                    "value": "AC",
+                                    "description": "IATA Code of the airline to filter the flights.",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page_size",
-                                    "value": "20",
-                                    "description": "Size per page. Defaults to 10.",
-                                    "disabled": false
+                                    "value": "",
+                                    "description": "Size per page. Defaults to 10. Must not be greater than 100.",
+                                    "disabled": true
                                 },
                                 {
                                     "key": "page",
-                                    "value": "1",
+                                    "value": "",
                                     "description": "Page to view.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort_by",
+                                    "value": "price",
+                                    "description": "Sorting field, currently can be only **price**.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sort_order",
+                                    "value": "asc",
+                                    "description": "Sorting order, can be either **asc** or **desc**. This field is required when sort_by is present.",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/flights\/search?departure_airport=YUL.&arrival_airport=YVR.&departure_date=vel&trip_type=quibusdam&return_date=minima&page_size=20&page=1"
+                            "raw": "{{baseUrl}}\/api\/flights\/search?departure_airport=YUL&arrival_airport=YVR&departure_date=2022-02-01&type=round-trip&return_date=2022-02-20&stops=&airline=AC&page_size=&page=&sort_by=price&sort_order=asc"
                         },
                         "method": "GET",
                         "header": [
@@ -390,11 +437,11 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"departure_airport\":\"tcwygiwdwerhmd\",\"arrival_airport\":\"jivnaehhidrpbjxmxxzqqntnbrmjkouzorwbuaefxvafwahxdaqoxwxpltldgyhmgppzmrefjgblqfmpptp\",\"departure_time\":\"17:24\",\"page_size\":12}"
-                        },
-                        "description": "Search for flights according to search criteria and return paginated result."
+                        "body": null,
+                        "description": "Search for flights according to search criteria and return paginated result.\n\nBriefly, flights can be searched by departure airport, arrival airport, departure date and return date(if is a round trip).",
+                        "auth": {
+                            "type": "noauth"
+                        }
                     },
                     "response": [
                         {
@@ -413,15 +460,15 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "56"
+                                    "value": "59"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
                                     "value": "*"
                                 }
                             ],
-                            "code": 422,
-                            "body": "{\"message\":\"The given data was invalid.\",\"errors\":{\"departure_airport\":[\"The selected departure airport is invalid.\"],\"arrival_airport\":[\"The selected arrival airport is invalid.\"]}}",
+                            "code": 500,
+                            "body": "{\n    \"message\": \"Method Illuminate\\\\Validation\\\\Validator::validateUppercase does not exist.\",\n    \"exception\": \"BadMethodCallException\",\n    \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Validation\\\\Validator.php\",\n    \"line\": 1534,\n    \"trace\": [\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Validation\\\\Validator.php\",\n            \"line\": 610,\n            \"function\": \"__call\",\n            \"class\": \"Illuminate\\\\Validation\\\\Validator\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Validation\\\\Validator.php\",\n            \"line\": 416,\n            \"function\": \"validateAttribute\",\n            \"class\": \"Illuminate\\\\Validation\\\\Validator\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Validation\\\\Validator.php\",\n            \"line\": 447,\n            \"function\": \"passes\",\n            \"class\": \"Illuminate\\\\Validation\\\\Validator\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Validation\\\\ValidatesWhenResolvedTrait.php\",\n            \"line\": 25,\n            \"function\": \"fails\",\n            \"class\": \"Illuminate\\\\Validation\\\\Validator\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Providers\\\\FormRequestServiceProvider.php\",\n            \"line\": 30,\n            \"function\": \"validateResolved\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\FormRequest\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Container.php\",\n            \"line\": 1265,\n            \"function\": \"Illuminate\\\\Foundation\\\\Providers\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Providers\\\\FormRequestServiceProvider\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Container.php\",\n            \"line\": 1229,\n            \"function\": \"fireCallbackArray\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Container.php\",\n            \"line\": 1215,\n            \"function\": \"fireAfterResolvingCallbacks\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Container.php\",\n            \"line\": 778,\n            \"function\": \"fireResolvingCallbacks\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Application.php\",\n            \"line\": 851,\n            \"function\": \"resolve\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Container.php\",\n            \"line\": 694,\n            \"function\": \"resolve\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Application.php\",\n            \"line\": 836,\n            \"function\": \"make\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\RouteDependencyResolverTrait.php\",\n            \"line\": 79,\n            \"function\": \"make\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\RouteDependencyResolverTrait.php\",\n            \"line\": 48,\n            \"function\": \"transformDependency\",\n            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\RouteDependencyResolverTrait.php\",\n            \"line\": 27,\n            \"function\": \"resolveMethodDependencies\",\n            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\ControllerDispatcher.php\",\n            \"line\": 40,\n            \"function\": \"resolveClassMethodDependencies\",\n            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Route.php\",\n            \"line\": 261,\n            \"function\": \"dispatch\",\n            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Route.php\",\n            \"line\": 205,\n            \"function\": \"runController\",\n            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Router.php\",\n            \"line\": 721,\n            \"function\": \"run\",\n            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 128,\n            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Middleware\\\\SubstituteBindings.php\",\n            \"line\": 50,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\SubstituteBindings\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests.php\",\n            \"line\": 127,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests.php\",\n            \"line\": 93,\n            \"function\": \"handleRequest\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests.php\",\n            \"line\": 55,\n            \"function\": \"handleRequestUsingNamedLimiter\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\sanctum\\\\src\\\\Http\\\\Middleware\\\\EnsureFrontendRequestsAreStateful.php\",\n            \"line\": 33,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 128,\n            \"function\": \"Laravel\\\\Sanctum\\\\Http\\\\Middleware\\\\{closure}\",\n            \"class\": \"Laravel\\\\Sanctum\\\\Http\\\\Middleware\\\\EnsureFrontendRequestsAreStateful\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 103,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\sanctum\\\\src\\\\Http\\\\Middleware\\\\EnsureFrontendRequestsAreStateful.php\",\n            \"line\": 32,\n            \"function\": \"then\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Laravel\\\\Sanctum\\\\Http\\\\Middleware\\\\EnsureFrontendRequestsAreStateful\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 103,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Router.php\",\n            \"line\": 719,\n            \"function\": \"then\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Router.php\",\n            \"line\": 698,\n            \"function\": \"runRouteWithinStack\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Router.php\",\n            \"line\": 662,\n            \"function\": \"runRoute\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Routing\\\\Router.php\",\n            \"line\": 651,\n            \"function\": \"dispatchToRoute\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Kernel.php\",\n            \"line\": 167,\n            \"function\": \"dispatch\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 128,\n            \"function\": \"Illuminate\\\\Foundation\\\\Http\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest.php\",\n            \"line\": 21,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ConvertEmptyStringsToNull.php\",\n            \"line\": 31,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ConvertEmptyStringsToNull\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest.php\",\n            \"line\": 21,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TrimStrings.php\",\n            \"line\": 40,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TrimStrings\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ValidatePostSize.php\",\n            \"line\": 27,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ValidatePostSize\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\PreventRequestsDuringMaintenance.php\",\n            \"line\": 86,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\PreventRequestsDuringMaintenance\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\fruitcake\\\\laravel-cors\\\\src\\\\HandleCors.php\",\n            \"line\": 52,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Fruitcake\\\\Cors\\\\HandleCors\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Http\\\\Middleware\\\\TrustProxies.php\",\n            \"line\": 39,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 167,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Http\\\\Middleware\\\\TrustProxies\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Pipeline\\\\Pipeline.php\",\n            \"line\": 103,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Kernel.php\",\n            \"line\": 142,\n            \"function\": \"then\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Http\\\\Kernel.php\",\n            \"line\": 111,\n            \"function\": \"sendRequestThroughRouter\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls.php\",\n            \"line\": 299,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls.php\",\n            \"line\": 287,\n            \"function\": \"callLaravelOrLumenRoute\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls.php\",\n            \"line\": 92,\n            \"function\": \"makeApiCall\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls.php\",\n            \"line\": 45,\n            \"function\": \"makeResponseCall\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls.php\",\n            \"line\": 35,\n            \"function\": \"makeResponseCallIfConditionsPass\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Extractor.php\",\n            \"line\": 209,\n            \"function\": \"__invoke\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Extractor.php\",\n            \"line\": 163,\n            \"function\": \"iterateThroughStrategies\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Extractor\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Extracting\\\\Extractor.php\",\n            \"line\": 95,\n            \"function\": \"fetchResponses\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Extractor\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp.php\",\n            \"line\": 122,\n            \"function\": \"processRoute\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Extractor\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp.php\",\n            \"line\": 69,\n            \"function\": \"extractEndpointsInfoFromLaravelApp\",\n            \"class\": \"Knuckles\\\\Scribe\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp.php\",\n            \"line\": 47,\n            \"function\": \"extractEndpointsInfoAndWriteToDisk\",\n            \"class\": \"Knuckles\\\\Scribe\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\knuckleswtf\\\\scribe\\\\src\\\\Commands\\\\GenerateDocumentation.php\",\n            \"line\": 51,\n            \"function\": \"get\",\n            \"class\": \"Knuckles\\\\Scribe\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\BoundMethod.php\",\n            \"line\": 36,\n            \"function\": \"handle\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Commands\\\\GenerateDocumentation\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Util.php\",\n            \"line\": 40,\n            \"function\": \"Illuminate\\\\Container\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Container\\\\BoundMethod\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\BoundMethod.php\",\n            \"line\": 93,\n            \"function\": \"unwrapIfClosure\",\n            \"class\": \"Illuminate\\\\Container\\\\Util\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\BoundMethod.php\",\n            \"line\": 35,\n            \"function\": \"callBoundMethod\",\n            \"class\": \"Illuminate\\\\Container\\\\BoundMethod\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Container\\\\Container.php\",\n            \"line\": 653,\n            \"function\": \"call\",\n            \"class\": \"Illuminate\\\\Container\\\\BoundMethod\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Console\\\\Command.php\",\n            \"line\": 136,\n            \"function\": \"call\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\symfony\\\\console\\\\Command\\\\Command.php\",\n            \"line\": 298,\n            \"function\": \"execute\",\n            \"class\": \"Illuminate\\\\Console\\\\Command\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Console\\\\Command.php\",\n            \"line\": 120,\n            \"function\": \"run\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Command\\\\Command\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\symfony\\\\console\\\\Application.php\",\n            \"line\": 1040,\n            \"function\": \"run\",\n            \"class\": \"Illuminate\\\\Console\\\\Command\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\symfony\\\\console\\\\Application.php\",\n            \"line\": 301,\n            \"function\": \"doRunCommand\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\symfony\\\\console\\\\Application.php\",\n            \"line\": 171,\n            \"function\": \"doRun\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Console\\\\Application.php\",\n            \"line\": 94,\n            \"function\": \"run\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Console\\\\Kernel.php\",\n            \"line\": 129,\n            \"function\": \"run\",\n            \"class\": \"Illuminate\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"C:\\\\Users\\\\Alfredo\\\\Documents\\\\server\\\\laravel\\\\trip-builder\\\\artisan\",\n            \"line\": 35,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Console\\\\Kernel\",\n            \"type\": \"->\"\n        }\n    ]\n}",
                             "name": ""
                         }
                     ]
