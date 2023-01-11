@@ -6,7 +6,7 @@ It's a REST API for searching Flights, a much simpler version of what a real fli
 
 I developed this project as a Coding Assessment to test my technical skills during a job application.
 
-**Usage** guide in down below, keep reading! 🙂 
+**Usage** guide can be found down below, keep reading! 🙂 
 
 ## 📃 Live endpoint and Documentation
 This API is live at [xxx](), and currently anyone can register a user and use it.
