@@ -64,7 +64,7 @@ class FlightRequest extends FormRequest
             ],
             'departure_date' => [
                 'description' => 'Date of departure.',
-                'example' => '2022-02-01'
+                'example' => '2021-02-01'
             ],
             'type' => [
                 'description' => 'Trip type, it can be a **one-way** or **round-trip**.',
@@ -72,7 +72,7 @@ class FlightRequest extends FormRequest
             ],
             'return_date' => [
                 'description' => 'Date of the return trip.',
-                'example' => '2022-02-20'
+                'example' => '2021-02-20'
             ],
             'stops' => [
                 'description' => 'Number of stops, can be blank(all flights), 0(direct flights only) or 1. When 1, will filter flights with 1+ stops',

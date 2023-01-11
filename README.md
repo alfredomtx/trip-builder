@@ -53,7 +53,7 @@ Here are a few things that could be done:
 This app uses MySQL. To use something different, open up `config/Database.php` and change the default driver.
 
 To use MySQL, make sure you install it, setup a database and then add your db credentials(database, username and password)
-to the `.env.example` file and rename it to .env`
+to the `.env.example` file and rename it to `.env`
 
 ### Migrations
 To create all the necessary tables and columns, run the following
@@ -76,7 +76,7 @@ php artisan serve
 ### Tests
 There are `feature tests` and a few `unit tests` for most endpoints and important features. To run the tests, run the command below.
 
-**PHPUnit** is set to to use an **in-memory database** for the tests, so you can run it locally without any prior setting needed.
+**PHPUnit** is set to to use an **in-memory database** for the tests, so you can run the tests locally without any prior setting needed.
 
 
 ```
