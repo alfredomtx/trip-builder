@@ -1,17 +1,9 @@
-
-
-
 # 🐘 What is this project?
 It's a REST API for searching Flights, a much simpler version of what a real flight searching platform do.
 
 I developed this project as a Coding Assessment to test my technical skills during a job application.
 
 **Usage** guide can be found down below, keep reading! 🙂 
-
-## 📃 Live endpoint and Documentation
-This API is live at [xxx]()(not ready yet), and currently anyone can register a user and use it.
-
-There is also a full documentation of all endpoints available, where you can also easily try requests in the browser.
 
 ## What the API can do:
 - Search flights from airport A to B (one way trip).
@@ -52,7 +44,7 @@ Here are a few things that could be done:
 This app uses MySQL. To use something different, open up `config/Database.php` and change the default driver.
 
 To use MySQL, make sure you install it, setup a database and then add your db credentials(database, username and password)
-to the `.env.example` file and rename it to `.env`
+to the `.env.example` file and rename it to `.env`.
 
 ### Migrations
 To create all the necessary tables and columns, run the following
@@ -75,12 +67,12 @@ php artisan serve
 ### Documentation 
 The documentation was generated using [Scribe](https://scribe.knuckles.wtf/), with the app running on localhost, you can access it in http://localhost/docs.
 
+You can make requests to the API in the documentation page, without the need of other programs like Postman, which is pretty cool.
+
 ### Tests
 There are `feature tests` and a few `unit tests` for most endpoints and important features. To run the tests, run the command below.
 
-**PHPUnit** is set to use an **in-memory database** for the tests, so you can run the tests locally without any prior setting needed.
-
-
+**PHPUnit** is set to use an **in-memory database** for the tests, so you can run the tests locally without any prior setting needed(not even MySQL configured).
 ```
 php artisan test
 ```
