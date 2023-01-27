@@ -22,7 +22,7 @@ class GeneralJsonException extends Exception
      * Render the exception as an HTTP Response
      *
      * @param Request $request
-     * @return void
+     * @return JsonResponse
      */
     public function render($request)
     {
